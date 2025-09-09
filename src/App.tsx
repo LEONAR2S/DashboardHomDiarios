@@ -47,7 +47,7 @@ function App() {
         <BarChartEstado />
         <BarChartEstadoMap />
         <BarChartTrim />
-        <BarChartMes data={data} />
+        <BarChartMes />
         <BarChartSemana />
         <BarChartDia />
         <BarChartFecha />
