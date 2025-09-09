@@ -150,12 +150,17 @@ const BarChartFecha = () => {
     setEndDate(maxISO);
   };
 
-  const handleDownloadImage = () => {
-    if (!chartRef.current) return;
-    const chart = chartInstanceRef.current ?? echarts.getInstanceByDom(chartRef.current);
-    const base64 = chart?.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#fff' });
-    base64 && (document.createElement('a').apply((link) => { link.href = base64; link.download = 'grafica_fecha.png'; link.click(); }) );
-  };
+const handleDownloadImage = () => {
+  if (!chartRef.current) return;
+  const chart = chartInstanceRef.current ?? echarts.getInstanceByDom(chartRef.current);
+  const base64 = chart?.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#fff' });
+  if (base64) {
+    const link = document.createElement('a');
+    link.href = base64;
+    link.download = 'grafica_fecha.png';
+    link.click();
+  }
+};
 
   const handleDownloadPDF = async () => {
     if (!chartRef.current) return;
