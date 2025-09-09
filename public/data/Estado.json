@@ -1,0 +1,130 @@
+[
+  {
+    "entidad": "Aguascalientes",
+    "valor": 38
+  },
+  {
+    "entidad": "Baja California",
+    "valor": 1003
+  },
+  {
+    "entidad": "Baja California Sur",
+    "valor": 77
+  },
+  {
+    "entidad": "Campeche",
+    "valor": 66
+  },
+  {
+    "entidad": "Chiapas",
+    "valor": 283
+  },
+  {
+    "entidad": "Chihuahua",
+    "valor": 1000
+  },
+  {
+    "entidad": "Ciudad de México",
+    "valor": 533
+  },
+  {
+    "entidad": "Coahuila",
+    "valor": 50
+  },
+  {
+    "entidad": "Colima",
+    "valor": 335
+  },
+  {
+    "entidad": "Durango",
+    "valor": 3
+  },
+  {
+    "entidad": "Guanajuato",
+    "valor": 1714
+  },
+  {
+    "entidad": "Guerrero",
+    "valor": 722
+  },
+  {
+    "entidad": "Hidalgo",
+    "valor": 158
+  },
+  {
+    "entidad": "Jalisco",
+    "valor": 723
+  },
+  {
+    "entidad": "Michoacán",
+    "valor": 943
+  },
+  {
+    "entidad": "Morelos",
+    "valor": 686
+  },
+  {
+    "entidad": "México",
+    "valor": 1125
+  },
+  {
+    "entidad": "Nayarit",
+    "valor": 108
+  },
+  {
+    "entidad": "Nuevo León",
+    "valor": 561
+  },
+  {
+    "entidad": "Oaxaca",
+    "valor": 447
+  },
+  {
+    "entidad": "Puebla",
+    "valor": 536
+  },
+  {
+    "entidad": "Querétaro",
+    "valor": 43
+  },
+  {
+    "entidad": "Quintana Roo",
+    "valor": 232
+  },
+  {
+    "entidad": "San Luis Potosí",
+    "valor": 156
+  },
+  {
+    "entidad": "Sinaloa",
+    "valor": 1175
+  },
+  {
+    "entidad": "Sonora",
+    "valor": 755
+  },
+  {
+    "entidad": "Tabasco",
+    "valor": 552
+  },
+  {
+    "entidad": "Tamaulipas",
+    "valor": 160
+  },
+  {
+    "entidad": "Tlaxcala",
+    "valor": 86
+  },
+  {
+    "entidad": "Veracruz",
+    "valor": 589
+  },
+  {
+    "entidad": "Yucatán",
+    "valor": 18
+  },
+  {
+    "entidad": "Zacatecas",
+    "valor": 120
+  }
+]

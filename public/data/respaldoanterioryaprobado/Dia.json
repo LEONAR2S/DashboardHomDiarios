@@ -1,0 +1,30 @@
+[
+  {
+    "dia_nombre": "domingo",
+    "valor": 2378
+  },
+  {
+    "dia_nombre": "jueves",
+    "valor": 2065
+  },
+  {
+    "dia_nombre": "lunes",
+    "valor": 2181
+  },
+  {
+    "dia_nombre": "martes",
+    "valor": 1954
+  },
+  {
+    "dia_nombre": "miércoles",
+    "valor": 2081
+  },
+  {
+    "dia_nombre": "sábado",
+    "valor": 2117
+  },
+  {
+    "dia_nombre": "viernes",
+    "valor": 2167
+  }
+]
