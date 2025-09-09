@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+
 import BarChartMes from './components/BarChartMes';
 import BarChartTrim from './components/BarChartTrim';
 import BarChartDia from './components/BarChartDia';
@@ -8,20 +8,8 @@ import BarChartSemana from './components/BarChartSemana';
 import BarChartEstadoMap from './components/BarChartEstadoMap';
 import './index.css';
 
-interface Datos {
-  mes: string;
-  valor: number;
-}
 
 function App() {
-  const [data, setData] = useState<Datos[]>([]);
-
-  useEffect(() => {
-    fetch('/data/ventas.json')
-      .then((res) => res.json())
-      .then(setData)
-      .catch((err) => console.error('Error cargando datos:', err));
-  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 px-4 sm:px-6 md:px-10 py-8">
