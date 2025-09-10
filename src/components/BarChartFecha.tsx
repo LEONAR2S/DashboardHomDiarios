@@ -19,7 +19,6 @@ const BarChartFecha = () => {
   const chartInstanceRef = useRef<echarts.EChartsType | null>(null);
 
   const [data, setData] = useState<Datos[]>([]);
-  const [filteredData, setFilteredData] = useState<Datos[]>([]);
   const [sortedData, setSortedData] = useState<Datos[]>([]);
   const [chartType, setChartType] = useState<'bar' | 'line'>('bar');
 
@@ -76,7 +75,6 @@ const BarChartFecha = () => {
       const iso = ddmmyyyyToISO(d.fecha);
       return iso >= startDate && iso <= endDate;
     });
-    setFilteredData(filtered);
     setSortedData([...filtered].sort((a, b) =>
       ddmmyyyyToISO(a.fecha).localeCompare(ddmmyyyyToISO(b.fecha))
     ));
