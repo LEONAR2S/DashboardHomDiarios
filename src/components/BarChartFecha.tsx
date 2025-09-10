@@ -125,12 +125,15 @@ const BarChartFecha = () => {
           type: chartType,
           data: sortedData.map(d => d.valor),
           smooth: chartType === 'line',
-          label: {
-            show: true,
-            position: chartType === 'bar' ? 'top' : 'right',
-            fontSize: 10,
-            formatter: (val: { value: number }) => val.value.toLocaleString(),
-          },
+label: {
+  show: true,
+  position: chartType === 'bar' ? 'top' : 'right',
+  fontSize: 10,
+  formatter: (params) => {
+    const val = typeof params.value === 'number' ? params.value : Number(params.value);
+    return val.toLocaleString();
+  },
+},
           ...(showAverage && valores.length
             ? {
                 markLine: {
