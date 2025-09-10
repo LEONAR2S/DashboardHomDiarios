@@ -5,14 +5,12 @@ import html2canvas from 'html2canvas';
 import {
   FaDownload,
   FaFilePdf,
-  FaSortAlphaDown,
-  FaSortAmountDown,
   FaChartBar,
   FaChartLine,
 } from 'react-icons/fa';
 
 interface Datos {
-  fecha: string; // fecha historia: dd/mm/yyyy
+  fecha: string; // formato dd/mm/yyyy
   valor: number;
 }
 
@@ -25,8 +23,12 @@ const BarChartFecha = () => {
   const [sortedData, setSortedData] = useState<Datos[]>([]);
   const [chartType, setChartType] = useState<'bar' | 'line'>('bar');
 
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
+  const [showAverage, setShowAverage] = useState(true);
+  const [showStdDev, setShowStdDev] = useState(false);
+  const [showCV, setShowCV] = useState(false);
+
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const ddmmyyyyToISO = (s: string) => {
     const [dd, mm, yyyy] = s.split('/');
@@ -39,12 +41,26 @@ const BarChartFecha = () => {
     return { minISO: allISO[0], maxISO: allISO[allISO.length - 1] };
   }, [data]);
 
+  const valores = useMemo(() => sortedData.map(d => d.valor), [sortedData]);
+
+  const media = useMemo(() => {
+    return valores.length ? valores.reduce((sum, v) => sum + v, 0) / valores.length : 0;
+  }, [valores]);
+
+  const stdDev = useMemo(() => {
+    if (valores.length < 2) return 0;
+    const sumSq = valores.reduce((sum, v) => sum + Math.pow(v - media, 2), 0);
+    return Math.sqrt(sumSq / (valores.length - 1));
+  }, [valores, media]);
+
+  const coefVar = useMemo(() => (media ? stdDev / media : 0), [stdDev, media]);
+  const countAbove = useMemo(() => valores.filter(v => v > media).length, [valores, media]);
+  const countBelow = useMemo(() => valores.filter(v => v < media).length, [valores, media]);
+
   useEffect(() => {
     fetch('/data/Fecha.json')
       .then(res => res.json())
-      .then((json: Datos[]) => {
-        setData(json);
-      });
+      .then((json: Datos[]) => setData(json));
   }, []);
 
   useEffect(() => {
@@ -55,38 +71,48 @@ const BarChartFecha = () => {
   }, [minISO, maxISO]);
 
   useEffect(() => {
-    if (!data.length || !startDate || !endDate) return;
-
+    if (!startDate || !endDate) return;
     const filtered = data.filter(d => {
       const iso = ddmmyyyyToISO(d.fecha);
       return iso >= startDate && iso <= endDate;
     });
     setFilteredData(filtered);
-
-    const ordenada = [...filtered].sort((a, b) =>
+    setSortedData([...filtered].sort((a, b) =>
       ddmmyyyyToISO(a.fecha).localeCompare(ddmmyyyyToISO(b.fecha))
-    );
-    setSortedData(ordenada);
+    ));
   }, [data, startDate, endDate]);
 
   useEffect(() => {
     if (!chartRef.current || !sortedData.length) return;
-
     const chart = chartInstanceRef.current ?? echarts.init(chartRef.current);
     chartInstanceRef.current = chart;
 
-    chart.setOption({
+    const options: echarts.EChartsOption = {
       title: { text: 'Homicidios por Fecha' },
       tooltip: { trigger: 'axis' },
-      toolbox: { feature: {} },
+      graphic: showAverage
+        ? [
+            {
+              type: 'text',
+              left: '5%',
+              top: '12%',
+              style: {
+                text: `Media: ${media.toFixed(2)}`,
+                fill: 'red',
+                font: '16px sans-serif',
+                fontWeight: 'bold',
+              },
+            },
+          ]
+        : [],
       dataZoom: [
-        { id: 'slider-zoom', type: 'slider', show: true, xAxisIndex: 0, start: 0, end: 100, bottom: 0 },
-        { id: 'inside-zoom', type: 'inside', xAxisIndex: 0, start: 0, end: 100 }
+        { type: 'slider', xAxisIndex: 0, start: 0, end: 100, bottom: 0 },
+        { type: 'inside', xAxisIndex: 0, start: 0, end: 100 },
       ],
-      grid: { top: 60, left: 50, right: 20, bottom: 70 },
+      grid: { top: showAverage ? 100 : 60, left: 50, right: 20, bottom: 70 },
       xAxis: {
         type: 'category',
-        data: sortedData.map(item => item.fecha),
+        data: sortedData.map(d => d.fecha),
         axisLabel: { rotate: 45, interval: 0, fontSize: 10 },
         axisTick: { alignWithLabel: true },
       },
@@ -94,122 +120,93 @@ const BarChartFecha = () => {
       series: [
         {
           type: chartType,
-          data: sortedData.map(item => item.valor),
+          data: sortedData.map(d => d.valor),
           smooth: chartType === 'line',
           label: {
             show: true,
             position: chartType === 'bar' ? 'top' : 'right',
             fontSize: 10,
-            color: '#333',
             formatter: (val: any) => val.value.toLocaleString(),
           },
-          lineStyle: chartType === 'line' ? { width: 2 } : undefined,
-          itemStyle: chartType === 'line' ? { color: '#5470c6' } : undefined,
+          ...(showAverage && valores.length
+            ? {
+                markLine: {
+                  symbol: 'none',
+                  data: [{ yAxis: media }],
+                  lineStyle: { type: 'dashed', color: 'red', width: 2 },
+                },
+              }
+            : {}),
         },
       ],
       animationDuration: 300,
-    });
-
-    const resizeHandler = () => chart.resize();
-    window.addEventListener('resize', resizeHandler);
-    return () => {
-      window.removeEventListener('resize', resizeHandler);
     };
-  }, [sortedData, chartType]);
 
-  useEffect(() => {
+    chart.setOption(options);
+    const resize = () => chart.resize();
+    window.addEventListener('resize', resize);
     return () => {
-      chartInstanceRef.current?.dispose();
+      window.removeEventListener('resize', resize);
+      chart.dispose();
       chartInstanceRef.current = null;
     };
-  }, []);
+  }, [sortedData, chartType, showAverage, media]);
 
-  const ordenarPorFecha = () => {
-    const ordenada = [...filteredData].sort((a, b) =>
-      ddmmyyyyToISO(a.fecha).localeCompare(ddmmyyyyToISO(b.fecha))
-    );
-    setSortedData(ordenada);
-  };
-
-  const ordenarPorValor = () => {
-    const ordenada = [...filteredData].sort((a, b) => b.valor - a.valor);
-    setSortedData(ordenada);
-  };
-
-  const applyRangeLastN = (n: number) => {
+  const applyLastN = (n: number) => {
     const chart = chartInstanceRef.current;
     if (!chart || !sortedData.length) return;
-    const len = sortedData.length;
-    const start = sortedData[Math.max(0, len - n)].fecha;
-    const end = sortedData[len - 1].fecha;
-    chart.dispatchAction({ type: 'dataZoom', startValue: start, endValue: end, xAxisIndex: 0 });
+    const start = sortedData[Math.max(0, sortedData.length - n)].fecha;
+    const end = sortedData[sortedData.length - 1].fecha;
+    chart.dispatchAction({ type: 'dataZoom', startValue: start, endValue: end });
   };
 
-  const applyCalendarFullRange = () => {
-    setStartDate(minISO);
-    setEndDate(maxISO);
+  const exportImage = () => {
+    if (!chartRef.current) return;
+    const chart = chartInstanceRef.current ?? echarts.getInstanceByDom(chartRef.current);
+    const url = chart?.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#fff' });
+    if (url) {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'grafica_fecha.png';
+      a.click();
+    }
   };
 
-const handleDownloadImage = () => {
-  if (!chartRef.current) return;
-  const chart = chartInstanceRef.current ?? echarts.getInstanceByDom(chartRef.current);
-  const base64 = chart?.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#fff' });
-  if (base64) {
-    const link = document.createElement('a');
-    link.href = base64;
-    link.download = 'grafica_fecha.png';
-    link.click();
-  }
-};
-
-  const handleDownloadPDF = async () => {
+  const exportPDF = async () => {
     if (!chartRef.current) return;
     const canvas = await html2canvas(chartRef.current);
-    const imgData = canvas.toDataURL('image/png');
+    const img = canvas.toDataURL('image/png');
     const pdf = new jsPDF();
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
+    const w = pdf.internal.pageSize.getWidth();
+    const h = (canvas.height * w) / canvas.width;
+    pdf.addImage(img, 'PNG', 0, 10, w, h);
     pdf.save('grafica_fecha.pdf');
   };
 
   return (
-    <div style={{
-      position: 'relative',
-      padding: '1rem',
-      border: '1px solid #ccc',
-      borderRadius: 8,
-      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-      background: '#fff',
-      marginBottom: '2rem',
-      width: '100%',
-      boxSizing: 'border-box',
-    }}>
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        gap: 10,
-        marginBottom: 10,
-      }}>
-        <button onClick={handleDownloadImage} title="Descargar imagen" style={buttonStyle}><FaDownload /></button>
-        <button onClick={handleDownloadPDF} title="Descargar PDF" style={buttonStyle}><FaFilePdf /></button>
-        <button onClick={ordenarPorFecha} title="Ordenar por Fecha" style={buttonStyle}><FaSortAlphaDown /></button>
-        <button onClick={ordenarPorValor} title="Ordenar por Valor" style={buttonStyle}><FaSortAmountDown /></button>
-        <button onClick={() => setChartType(prev => prev === 'bar' ? 'line' : 'bar')} title="Tipo gráfico" style={buttonStyle}>
-          {chartType === 'bar' ? <FaChartLine /> : <FaChartBar />}
-        </button>
-        <button onClick={() => applyRangeLastN(30)} title="Últimos 30 días" style={quickBtn}>Últ. 30</button>
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <label style={{ fontSize: 12, color: '#555' }}>De:</label>
-          <input type="date" value={startDate} min={minISO} max={endDate || maxISO} onChange={e => setStartDate(e.target.value)} style={dateInput} />
-          <label style={{ fontSize: 12, color: '#555' }}>a:</label>
-          <input type="date" value={endDate} min={startDate || minISO} max={maxISO} onChange={e => setEndDate(e.target.value)} style={dateInput} />
-          <button onClick={applyCalendarFullRange} title="Rango completo" style={quickBtn}>Rango total</button>
-        </div>
+    <div style={{ position: 'relative', padding: '1rem', background: '#fff', marginBottom: '2rem', border: '1px solid #ccc', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', width: '100%', boxSizing: 'border-box' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end', gap: 10, marginBottom: 10 }}>
+        <button onClick={exportImage} style={buttonStyle}><FaDownload /></button>
+        <button onClick={exportPDF} style={buttonStyle}><FaFilePdf /></button>
+        <button onClick={() => setChartType(prev => prev === 'bar' ? 'line' : 'bar')} style={buttonStyle}>{chartType === 'bar' ? <FaChartLine /> : <FaChartBar />}</button>
+        <button onClick={() => applyLastN(30)} style={buttonStyle}>Últ. 30</button>
+        <input type="date" value={startDate} min={minISO} max={endDate} onChange={e => setStartDate(e.target.value)} style={dateInput} />
+        <input type="date" value={endDate} min={startDate} max={maxISO} onChange={e => setEndDate(e.target.value)} style={dateInput} />
+        <button onClick={() => { setStartDate(minISO); setEndDate(maxISO); }} style={buttonStyle}>Rango completo</button>
+        <button onClick={() => setShowAverage(p => !p)} style={buttonStyle}>{showAverage ? 'Ocultar Media' : 'Mostrar Media'}</button>
+        <button onClick={() => setShowStdDev(p => !p)} style={buttonStyle}>{showStdDev ? 'Ocultar SD' : 'Mostrar SD'}</button>
+        <button onClick={() => setShowCV(p => !p)} style={buttonStyle}>{showCV ? 'Ocultar CV' : 'Mostrar CV'}</button>
       </div>
-      <div ref={chartRef} style={{ width: '100%', height: '520px', minHeight: 300 }} />
+
+      {(showAverage || showStdDev || showCV) && (
+        <div style={{ marginBottom: '1rem', fontSize: '0.9rem' }}>
+          {showAverage && <>📌 Media: {media.toFixed(2)} · 🔺 Fechas por encima: {countAbove} · 🔻 Fechas por debajo: {countBelow}</>}
+          {showStdDev && <div>📉 Desviación estándar: {stdDev.toFixed(2)}</div>}
+          {showCV && <div>📊 Coeficiente de variación: {(coefVar * 100).toFixed(2)}%</div>}
+        </div>
+      )}
+
+      <div ref={chartRef} style={{ width: '100%', height: 520, minHeight: 300 }} />
     </div>
   );
 };
@@ -223,18 +220,9 @@ const buttonStyle: React.CSSProperties = {
   padding: '6px 8px',
 };
 
-const quickBtn: React.CSSProperties = {
-  background: 'none',
-  border: '1px solid #bbb',
-  borderRadius: 6,
-  cursor: 'pointer',
-  fontSize: '12px',
-  padding: '4px 8px',
-};
-
 const dateInput: React.CSSProperties = {
   border: '1px solid #ddd',
-  borderRadius: 6,
+  borderRadius: 4,
   padding: '4px 6px',
   fontSize: 12,
 };

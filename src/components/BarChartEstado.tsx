@@ -24,13 +24,31 @@ const BarChartEstado = () => {
   const [sortedData, setSortedData] = useState<Datos[]>([]);
   const [chartType, setChartType] = useState<'bar' | 'treemap'>('bar');
   const [showAsPercentage, setShowAsPercentage] = useState(false);
+  const [showAverageLine, setShowAverageLine] = useState(false);
+
+  const [leyenda50, setLeyenda50] = useState<{ entidades: number; porcentaje: number } | null>(null);
+  const [leyendaTop10, setLeyendaTop10] = useState<{ total: number; porcentaje: number } | null>(null);
 
   const totalHomicidios = useMemo(
     () => data.reduce((sum, item) => sum + (item.valor || 0), 0),
     [data]
   );
 
-  // Cargar datos
+  const promedioNacional = useMemo(
+    () => (data.length > 0 ? totalHomicidios / data.length : 0),
+    [totalHomicidios, data]
+  );
+
+  const countAbove = useMemo(
+    () => data.filter((d) => d.valor > promedioNacional).length,
+    [data, promedioNacional]
+  );
+
+  const countBelow = useMemo(
+    () => data.filter((d) => d.valor < promedioNacional).length,
+    [data, promedioNacional]
+  );
+
   useEffect(() => {
     fetch('/data/Estado.json')
       .then((res) => res.json())
@@ -41,7 +59,6 @@ const BarChartEstado = () => {
       .catch((err) => console.error('Error cargando datos:', err));
   }, []);
 
-  // Renderizar gráfico
   useEffect(() => {
     if (!chartRef.current || !sortedData.length) return;
 
@@ -66,14 +83,12 @@ const BarChartEstado = () => {
             tooltip: {
               trigger: 'axis',
               formatter: (params: any) => {
-                const val = params[0].value;
-                const name = params[0].name;
+                const { value, name } = params[0];
                 return showAsPercentage
-                  ? `${name}<br/>${val.toFixed(2)}%`
-                  : `${name}<br/>${val.toLocaleString()} homicidios`;
+                  ? `${name}<br/>${value.toFixed(2)}%`
+                  : `${name}<br/>${value.toLocaleString()} homicidios`;
               },
             },
-            toolbox: {},
             dataZoom: [
               { type: 'slider', show: false, xAxisIndex: 0, start: 0, end: 100, bottom: 0 },
               { type: 'inside', xAxisIndex: 0, start: 0, end: 100 },
@@ -102,17 +117,43 @@ const BarChartEstado = () => {
                       ? `${val.value.toFixed(2)}%`
                       : val.value.toLocaleString(),
                 },
+                ...(showAverageLine && !showAsPercentage
+                  ? {
+                      markLine: {
+                        symbol: 'none',
+                        data: [
+                          {
+                            yAxis: promedioNacional,
+                            lineStyle: { type: 'dashed', color: 'red', width: 2 },
+                          },
+                        ],
+                      },
+                    }
+                  : {}),
               },
             ],
+            ...(!showAverageLine
+              ? {
+                  visualMap: {
+                    show: false,
+                    dimension: 0,
+                    min: minVal,
+                    max: maxVal,
+                    inRange: {
+                      color: ['#317ccdff', '#c72e1c'],
+                    },
+                  },
+                }
+              : {}),
           }
         : {
             title: { text: 'Mapa de Árbol: Homicidios por Estado' },
             tooltip: {
               formatter: (params: any) => {
-                const val = params.value;
+                const { name, value } = params;
                 return showAsPercentage
-                  ? `${params.name}<br/>${val.toFixed(2)}%`
-                  : `${params.name}<br/>${val.toLocaleString()} homicidios`;
+                  ? `${name}<br/>${value.toFixed(2)}%`
+                  : `${name}<br/>${value.toLocaleString()} homicidios`;
               },
             },
             series: [
@@ -151,16 +192,57 @@ const BarChartEstado = () => {
       chart.dispose();
       chartInstanceRef.current = null;
     };
-  }, [sortedData, chartType, showAsPercentage, totalHomicidios]);
+  }, [sortedData, chartType, showAsPercentage, totalHomicidios, showAverageLine]);
 
   const ordenarPorNombre = (baseData: Datos[] = data) => {
+    setLeyenda50(null);
+    setLeyendaTop10(null);
     const ordenada = [...baseData].sort((a, b) => a.entidad.localeCompare(b.entidad));
     setSortedData(ordenada);
   };
 
   const ordenarPorValor = () => {
+    setLeyenda50(null);
+    setLeyendaTop10(null);
     const ordenada = [...data].sort((a, b) => b.valor - a.valor);
     setSortedData(ordenada);
+  };
+
+  const mostrarTop10 = () => {
+    setLeyenda50(null);
+    const top10 = [...data]
+      .sort((a, b) => b.valor - a.valor)
+      .slice(0, 10);
+
+    const totalTop10 = top10.reduce((sum, item) => sum + item.valor, 0);
+    const porcentaje = parseFloat(((totalTop10 * 100) / totalHomicidios).toFixed(1));
+
+    setLeyendaTop10({ total: totalTop10, porcentaje });
+    setSortedData(top10);
+  };
+
+  const mostrarTop50Porciento = () => {
+    setLeyendaTop10(null);
+    const sorted = [...data].sort((a, b) => b.valor - a.valor);
+    let acumulado = 0;
+    let subset: Datos[] = [];
+
+    for (let i = 0; i < sorted.length; i++) {
+      acumulado += sorted[i].valor;
+      subset.push(sorted[i]);
+      if ((acumulado / totalHomicidios) >= 0.5) break;
+    }
+
+    const porcentaje = parseFloat(((acumulado * 100) / totalHomicidios).toFixed(1));
+    setLeyenda50({ entidades: subset.length, porcentaje });
+    setSortedData(subset);
+  };
+
+  const restablecerVistaOriginal = () => {
+    setLeyenda50(null);
+    setLeyendaTop10(null);
+    setShowAverageLine(false);
+    ordenarPorNombre(data);
   };
 
   const handleDownloadImage = () => {
@@ -187,30 +269,25 @@ const BarChartEstado = () => {
   };
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        padding: '1rem',
-        border: '1px solid #ccc',
-        borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        background: '#fff',
-        marginBottom: '2rem',
-        width: '100%',
-        boxSizing: 'border-box',
-      }}
-    >
-      {/* 🔘 Botones de herramientas */}
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'flex-end',
-          gap: '10px',
-          marginBottom: '10px',
-          alignItems: 'center',
-        }}
-      >
+    <div style={{
+      position: 'relative',
+      padding: '1rem',
+      border: '1px solid #ccc',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+      background: '#fff',
+      marginBottom: '2rem',
+      width: '100%',
+      boxSizing: 'border-box',
+    }}>
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-end',
+        gap: '10px',
+        marginBottom: '10px',
+        alignItems: 'center',
+      }}>
         <button onClick={handleDownloadImage} title="Descargar imagen" style={buttonStyle}>
           <FaDownload />
         </button>
@@ -223,26 +300,50 @@ const BarChartEstado = () => {
         <button onClick={ordenarPorValor} title="Ordenar por Valor" style={buttonStyle}>
           <FaSortAmountDown />
         </button>
-        <button
-          onClick={() => setChartType((prev) => (prev === 'bar' ? 'treemap' : 'bar'))}
-          title="Cambiar tipo de gráfico"
-          style={buttonStyle}
-        >
+        <button onClick={mostrarTop10} title="Top 10 estados" style={buttonStyle}>
+          Top 10
+        </button>
+        <button onClick={mostrarTop50Porciento} title="Estados con +50%" style={buttonStyle}>
+          +50%
+        </button>
+
+        <button onClick={() => setChartType((prev) => (prev === 'bar' ? 'treemap' : 'bar'))} title="Cambiar tipo de gráfico" style={buttonStyle}>
           {chartType === 'bar' ? <FaSitemap /> : <FaChartBar />}
         </button>
-        <button
-          onClick={() => setShowAsPercentage((prev) => !prev)}
-          title="Mostrar como porcentaje"
-          style={buttonStyle}
-        >
+        <button onClick={() => setShowAsPercentage((prev) => !prev)} title="Mostrar como porcentaje" style={buttonStyle}>
           {showAsPercentage ? '%' : '#'}
         </button>
-        <div style={totalBoxStyle}>
-          Total: {totalHomicidios.toLocaleString()}
-        </div>
+        <button onClick={() => {
+          setShowAverageLine((prev) => !prev);
+          setLeyenda50(null);
+          setLeyendaTop10(null);
+        }} title="Mostrar/Ocultar Promedio Nacional" style={buttonStyle}>
+          {showAverageLine ? '🔴 Prom. Nal.' : '⚪ Prom. Nal.'}
+        </button>
+        <button onClick={restablecerVistaOriginal} title="Restablecer vista original" style={buttonStyle}>
+          ⟳
+        </button>
+        <div style={totalBoxStyle}>Total: {totalHomicidios.toLocaleString()}</div>
       </div>
 
-      {/* 📊 Contenedor de la gráfica */}
+      {showAverageLine && (
+        <div style={legendBoxStyle}>
+          🔺 {countAbove} estados por encima · 🔻 {countBelow} estados por debajo del promedio
+        </div>
+      )}
+
+      {leyenda50 && !showAverageLine && (
+        <div style={legendBoxStyle}>
+           {leyenda50.entidades} entidades concentran el {leyenda50.porcentaje}% de los homicidios
+        </div>
+      )}
+
+      {leyendaTop10 && !showAverageLine && (
+        <div style={legendBoxStyle}>
+           Top 10 entidades acumulan {leyendaTop10.total.toLocaleString()} homicidios ({leyendaTop10.porcentaje}%)
+        </div>
+      )}
+
       <div ref={chartRef} style={{ width: '100%', height: '500px', minHeight: '300px' }} />
     </div>
   );
@@ -265,6 +366,15 @@ const totalBoxStyle: React.CSSProperties = {
   fontSize: '13px',
   fontWeight: 'bold',
   whiteSpace: 'nowrap',
+};
+
+const legendBoxStyle: React.CSSProperties = {
+  backgroundColor: '#f9f9f9',
+  color: '#555',
+  padding: '8px 12px',
+  borderRadius: '6px',
+  fontSize: '14px',
+  marginBottom: '10px',
 };
 
 export default BarChartEstado;

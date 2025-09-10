@@ -1,5 +1,5 @@
 import * as echarts from 'echarts';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import {
@@ -17,8 +17,8 @@ interface Datos {
 }
 
 const MESES_ORDENADOS = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+  'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+  'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
 ];
 
 const BarChart = () => {
@@ -26,6 +26,37 @@ const BarChart = () => {
   const [data, setData] = useState<Datos[]>([]);
   const [sortedData, setSortedData] = useState<Datos[]>([]);
   const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
+
+  const [showAverage, setShowAverage] = useState(true);
+  const [showStdDev, setShowStdDev] = useState(false);
+  const [showCV, setShowCV] = useState(false);
+
+  const valores = useMemo(() => sortedData.map(d => d.valor), [sortedData]);
+
+  const media = useMemo(() => {
+    return valores.length > 0
+      ? valores.reduce((a, b) => a + b, 0) / valores.length
+      : 0;
+  }, [valores]);
+
+  const stdDev = useMemo(() => {
+    if (valores.length < 2) return 0;
+    const mean = media;
+    const sumSq = valores.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0);
+    return Math.sqrt(sumSq / (valores.length - 1));
+  }, [valores, media]);
+
+  const coefVar = useMemo(() => {
+    return media !== 0 ? stdDev / media : 0;
+  }, [stdDev, media]);
+
+  const maxMes = useMemo(() => {
+    return sortedData.length > 0 ? sortedData.reduce((max, item) => item.valor > max.valor ? item : max) : null;
+  }, [sortedData]);
+
+  const minMes = useMemo(() => {
+    return sortedData.length > 0 ? sortedData.reduce((min, item) => item.valor < min.valor ? item : min) : null;
+  }, [sortedData]);
 
   useEffect(() => {
     fetch('/data/Mes.json')
@@ -38,34 +69,59 @@ const BarChart = () => {
 
   useEffect(() => {
     if (!chartRef.current || !sortedData.length) return;
-
     const chart = echarts.init(chartRef.current);
 
     const options =
       chartType === 'bar'
         ? {
             title: { text: 'Homicidios por Mes' },
-            tooltip: {},
+            tooltip: {
+              trigger: 'axis',
+              formatter: (params: any) => {
+                const val = params[0].value;
+                const name = params[0].name;
+                return `${name}<br/>${val.toLocaleString()} homicidios`;
+              },
+            },
             xAxis: {
               type: 'category',
-              data: sortedData.map(item => item.mes),
-              axisLabel: {
-                rotate: 45,
-                interval: 0,
-              },
+              data: sortedData.map(i => i.mes),
+              axisLabel: { rotate: 45, interval: 0 },
             },
             yAxis: { type: 'value' },
             series: [
               {
                 type: 'bar',
-                data: sortedData.map(item => item.valor),
+                data: valores,
                 label: {
                   show: true,
                   position: 'top',
                   fontSize: 12,
-                  color: '#333',
-                  formatter: (val: any) => val.value.toLocaleString(),
+                  formatter: (v: any) => v.value.toLocaleString(),
                 },
+                ...(showAverage && valores.length > 0
+                  ? {
+                      markLine: {
+                        symbol: 'none',
+                        data: [
+                          {
+                            yAxis: media,
+                            lineStyle: {
+                              type: 'dashed',
+                              color: 'red',
+                              width: 2,
+                            },
+                            label: {
+                              formatter: `Media: ${media.toFixed(2)}`,
+                              position: 'end',
+                              color: 'red',
+                              fontWeight: 'bold',
+                            },
+                          },
+                        ],
+                      },
+                    }
+                  : {}),
               },
             ],
           }
@@ -79,10 +135,7 @@ const BarChart = () => {
               {
                 type: 'pie',
                 radius: '60%',
-                data: sortedData.map(item => ({
-                  name: item.mes,
-                  value: item.valor,
-                })),
+                data: sortedData.map(i => ({ name: i.mes, value: i.valor })),
                 label: {
                   formatter: '{b}\n{c} ({d}%)',
                 },
@@ -91,27 +144,19 @@ const BarChart = () => {
           };
 
     chart.setOption(options);
-
-    // ✅ Hacer la gráfica responsive
-    const handleResize = () => chart.resize();
-    window.addEventListener('resize', handleResize);
-
+    window.addEventListener('resize', () => chart.resize());
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', () => chart.resize());
       chart.dispose();
     };
-  }, [sortedData, chartType]);
+  }, [sortedData, chartType, showAverage, media]);
 
   const ordenarPorMesNatural = (baseData: Datos[] = data) => {
-    const ordenada = [...baseData].sort(
-      (a, b) => MESES_ORDENADOS.indexOf(a.mes) - MESES_ORDENADOS.indexOf(b.mes)
-    );
-    setSortedData(ordenada);
+    setSortedData([...baseData].sort((a, b) => MESES_ORDENADOS.indexOf(a.mes) - MESES_ORDENADOS.indexOf(b.mes)));
   };
 
   const ordenarPorValor = () => {
-    const ordenada = [...data].sort((a, b) => b.valor - a.valor);
-    setSortedData(ordenada);
+    setSortedData([...data].sort((a, b) => b.valor - a.valor));
   };
 
   const handleDownloadImage = () => {
@@ -138,47 +183,37 @@ const BarChart = () => {
   };
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        padding: '1rem',
-        border: '1px solid #ccc',
-        borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        background: '#fff',
-        marginTop: '1rem',
-      }}
-    >
-      <div
-        style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          display: 'flex',
-          gap: '10px',
-          zIndex: 10,
-        }}
-      >
-        <button onClick={handleDownloadImage} title="Descargar imagen" style={buttonStyle}>
-          <FaDownload />
-        </button>
-        <button onClick={handleDownloadPDF} title="Descargar PDF" style={buttonStyle}>
-          <FaFilePdf />
-        </button>
-        <button onClick={() => ordenarPorMesNatural()} title="Ordenar por mes" style={buttonStyle}>
-          <FaSortAlphaDown />
-        </button>
-        <button onClick={ordenarPorValor} title="Ordenar por valor descendente" style={buttonStyle}>
-          <FaSortAmountDown />
-        </button>
-        <button
-          onClick={() => setChartType(chartType === 'bar' ? 'pie' : 'bar')}
-          title="Cambiar tipo de gráfico"
-          style={buttonStyle}
-        >
+    <div style={{ position: 'relative', padding: '1rem', border: '1px solid #ccc', borderRadius: 8, background: '#fff', marginTop: '1rem' }}>
+      <div style={{ position: 'absolute', top: 10, right: 10, display: 'flex', gap: '10px', zIndex: 10 }}>
+        <button onClick={handleDownloadImage} title="Descargar imagen" style={buttonStyle}><FaDownload /></button>
+        <button onClick={handleDownloadPDF} title="Descargar PDF" style={buttonStyle}><FaFilePdf /></button>
+        <button onClick={ordenarPorMesNatural} title="Ordenar por mes" style={buttonStyle}><FaSortAlphaDown /></button>
+        <button onClick={ordenarPorValor} title="Ordenar por valor" style={buttonStyle}><FaSortAmountDown /></button>
+        <button onClick={() => setChartType(chartType === 'bar' ? 'pie' : 'bar')} title="Cambiar tipo gráfico" style={buttonStyle}>
           {chartType === 'bar' ? <FaChartPie /> : <FaChartBar />}
         </button>
+        <button onClick={() => setShowAverage(prev => !prev)} title="Mostrar/Ocultar promedio" style={buttonStyle}>
+          {showAverage ? 'Ocultar Media' : 'Mostrar Media'}
+        </button>
+        <button onClick={() => setShowStdDev(prev => !prev)} title="Mostrar/Ocultar desviación estándar" style={buttonStyle}>
+          {showStdDev ? 'Ocultar SD' : 'Mostrar SD'}
+        </button>
+        <button onClick={() => setShowCV(prev => !prev)} title="Mostrar/Ocultar CV" style={buttonStyle}>
+          {showCV ? 'Ocultar CV' : 'Mostrar CV'}
+        </button>
       </div>
+
+      {/* Análisis estadístico */}
+      {(showStdDev || showCV || showAverage) && (
+        <div style={{ marginBottom: '1rem', fontSize: '0.9rem' }}>
+          {showAverage && <div>📌 <strong>Media:</strong> {media.toFixed(2)}</div>}
+          {showStdDev && <div>📉 <strong>Desviación estándar:</strong> {stdDev.toFixed(2)}</div>}
+          {showCV && <div>📊 <strong>Coeficiente de variación:</strong> {(coefVar * 100).toFixed(2)}%</div>}
+          {maxMes && <div>🔺 <strong>Máximo:</strong> {maxMes.mes} ({maxMes.valor.toLocaleString()})</div>}
+          {minMes && <div>🔻 <strong>Mínimo:</strong> {minMes.mes} ({minMes.valor.toLocaleString()})</div>}
+        </div>
+      )}
+
       <div ref={chartRef} style={{ width: '100%', height: '400px', minHeight: 300 }} />
     </div>
   );
@@ -186,10 +221,11 @@ const BarChart = () => {
 
 const buttonStyle: React.CSSProperties = {
   background: 'none',
-  border: 'none',
+  border: '1px solid #ddd',
+  borderRadius: 6,
   cursor: 'pointer',
-  fontSize: '16px',
-  padding: '4px',
+  fontSize: '14px',
+  padding: '6px',
 };
 
 export default BarChart;
