@@ -42,9 +42,9 @@ const BarChartFecha = () => {
 
   const valores = useMemo(() => sortedData.map(d => d.valor), [sortedData]);
 
-  const media = useMemo(() => {
-    return valores.length ? valores.reduce((sum, v) => sum + v, 0) / valores.length : 0;
-  }, [valores]);
+  const media = useMemo(() => (
+    valores.length ? valores.reduce((sum, v) => sum + v, 0) / valores.length : 0
+  ), [valores]);
 
   const stdDev = useMemo(() => {
     if (valores.length < 2) return 0;
@@ -71,17 +71,22 @@ const BarChartFecha = () => {
 
   useEffect(() => {
     if (!startDate || !endDate) return;
+
     const filtered = data.filter(d => {
       const iso = ddmmyyyyToISO(d.fecha);
       return iso >= startDate && iso <= endDate;
     });
-    setSortedData([...filtered].sort((a, b) =>
+
+    const ordenado = [...filtered].sort((a, b) =>
       ddmmyyyyToISO(a.fecha).localeCompare(ddmmyyyyToISO(b.fecha))
-    ));
+    );
+
+    setSortedData(ordenado);
   }, [data, startDate, endDate]);
 
   useEffect(() => {
     if (!chartRef.current || !sortedData.length) return;
+
     const chart = chartInstanceRef.current ?? echarts.init(chartRef.current);
     chartInstanceRef.current = chart;
 
@@ -124,7 +129,7 @@ const BarChartFecha = () => {
             show: true,
             position: chartType === 'bar' ? 'top' : 'right',
             fontSize: 10,
-            formatter: (val: any) => val.value.toLocaleString(),
+            formatter: (val: { value: number }) => val.value.toLocaleString(),
           },
           ...(showAverage && valores.length
             ? {
@@ -141,8 +146,10 @@ const BarChartFecha = () => {
     };
 
     chart.setOption(options);
+
     const resize = () => chart.resize();
     window.addEventListener('resize', resize);
+
     return () => {
       window.removeEventListener('resize', resize);
       chart.dispose();
@@ -153,15 +160,23 @@ const BarChartFecha = () => {
   const applyLastN = (n: number) => {
     const chart = chartInstanceRef.current;
     if (!chart || !sortedData.length) return;
+
     const start = sortedData[Math.max(0, sortedData.length - n)].fecha;
     const end = sortedData[sortedData.length - 1].fecha;
-    chart.dispatchAction({ type: 'dataZoom', startValue: start, endValue: end });
+
+    chart.dispatchAction({
+      type: 'dataZoom',
+      startValue: start,
+      endValue: end,
+    });
   };
 
   const exportImage = () => {
     if (!chartRef.current) return;
+
     const chart = chartInstanceRef.current ?? echarts.getInstanceByDom(chartRef.current);
     const url = chart?.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#fff' });
+
     if (url) {
       const a = document.createElement('a');
       a.href = url;
@@ -172,6 +187,7 @@ const BarChartFecha = () => {
 
   const exportPDF = async () => {
     if (!chartRef.current) return;
+
     const canvas = await html2canvas(chartRef.current);
     const img = canvas.toDataURL('image/png');
     const pdf = new jsPDF();
@@ -186,7 +202,9 @@ const BarChartFecha = () => {
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-end', gap: 10, marginBottom: 10 }}>
         <button onClick={exportImage} style={buttonStyle}><FaDownload /></button>
         <button onClick={exportPDF} style={buttonStyle}><FaFilePdf /></button>
-        <button onClick={() => setChartType(prev => prev === 'bar' ? 'line' : 'bar')} style={buttonStyle}>{chartType === 'bar' ? <FaChartLine /> : <FaChartBar />}</button>
+        <button onClick={() => setChartType(prev => prev === 'bar' ? 'line' : 'bar')} style={buttonStyle}>
+          {chartType === 'bar' ? <FaChartLine /> : <FaChartBar />}
+        </button>
         <button onClick={() => applyLastN(30)} style={buttonStyle}>Últ. 30</button>
         <input type="date" value={startDate} min={minISO} max={endDate} onChange={e => setStartDate(e.target.value)} style={dateInput} />
         <input type="date" value={endDate} min={startDate} max={maxISO} onChange={e => setEndDate(e.target.value)} style={dateInput} />

@@ -5,7 +5,7 @@
   },
   {
     "entidad": "Baja California",
-    "valor": 1003
+    "valor": 1007
   },
   {
     "entidad": "Baja California Sur",
@@ -13,27 +13,27 @@
   },
   {
     "entidad": "Campeche",
-    "valor": 66
+    "valor": 67
   },
   {
     "entidad": "Chiapas",
-    "valor": 283
+    "valor": 284
   },
   {
     "entidad": "Chihuahua",
-    "valor": 1000
+    "valor": 1004
   },
   {
     "entidad": "Ciudad de México",
     "valor": 533
   },
   {
-    "entidad": "Coahuila",
-    "valor": 50
+    "entidad": "Coahuila de Zaragoza",
+    "valor": 51
   },
   {
     "entidad": "Colima",
-    "valor": 335
+    "valor": 336
   },
   {
     "entidad": "Durango",
@@ -41,31 +41,31 @@
   },
   {
     "entidad": "Guanajuato",
-    "valor": 1714
+    "valor": 1720
   },
   {
     "entidad": "Guerrero",
-    "valor": 722
+    "valor": 725
   },
   {
     "entidad": "Hidalgo",
-    "valor": 158
+    "valor": 159
   },
   {
     "entidad": "Jalisco",
-    "valor": 723
+    "valor": 724
   },
   {
-    "entidad": "Michoacán",
-    "valor": 943
+    "entidad": "Michoacán de Ocampo",
+    "valor": 946
   },
   {
     "entidad": "Morelos",
-    "valor": 686
+    "valor": 688
   },
   {
     "entidad": "México",
-    "valor": 1125
+    "valor": 1129
   },
   {
     "entidad": "Nayarit",
@@ -73,15 +73,15 @@
   },
   {
     "entidad": "Nuevo León",
-    "valor": 561
+    "valor": 562
   },
   {
     "entidad": "Oaxaca",
-    "valor": 447
+    "valor": 449
   },
   {
     "entidad": "Puebla",
-    "valor": 536
+    "valor": 537
   },
   {
     "entidad": "Querétaro",
@@ -97,11 +97,11 @@
   },
   {
     "entidad": "Sinaloa",
-    "valor": 1175
+    "valor": 1178
   },
   {
     "entidad": "Sonora",
-    "valor": 755
+    "valor": 758
   },
   {
     "entidad": "Tabasco",
@@ -116,7 +116,7 @@
     "valor": 86
   },
   {
-    "entidad": "Veracruz",
+    "entidad": "Veracruz de Ignacio de la Llave",
     "valor": 589
   },
   {
@@ -125,6 +125,6 @@
   },
   {
     "entidad": "Zacatecas",
-    "valor": 120
+    "valor": 121
   }
 ]
