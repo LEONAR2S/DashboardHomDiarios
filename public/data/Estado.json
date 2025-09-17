@@ -1,11 +1,11 @@
 [
   {
     "entidad": "Aguascalientes",
-    "valor": 38
+    "valor": 40
   },
   {
     "entidad": "Baja California",
-    "valor": 1038
+    "valor": 1041
   },
   {
     "entidad": "Baja California Sur",
@@ -21,11 +21,11 @@
   },
   {
     "entidad": "Chihuahua",
-    "valor": 1031
+    "valor": 1034
   },
   {
     "entidad": "Ciudad de México",
-    "valor": 545
+    "valor": 547
   },
   {
     "entidad": "Coahuila de Zaragoza",
@@ -33,7 +33,7 @@
   },
   {
     "entidad": "Colima",
-    "valor": 342
+    "valor": 343
   },
   {
     "entidad": "Durango",
@@ -41,35 +41,35 @@
   },
   {
     "entidad": "Guanajuato",
-    "valor": 1750
+    "valor": 1755
   },
   {
     "entidad": "Guerrero",
-    "valor": 739
+    "valor": 740
   },
   {
     "entidad": "Hidalgo",
-    "valor": 163
+    "valor": 165
   },
   {
     "entidad": "Jalisco",
-    "valor": 733
+    "valor": 735
   },
   {
     "entidad": "Michoacán de Ocampo",
-    "valor": 969
+    "valor": 970
   },
   {
     "entidad": "Morelos",
-    "valor": 703
+    "valor": 705
   },
   {
     "entidad": "México",
-    "valor": 1147
+    "valor": 1155
   },
   {
     "entidad": "Nayarit",
-    "valor": 117
+    "valor": 118
   },
   {
     "entidad": "Nuevo León",
@@ -77,11 +77,11 @@
   },
   {
     "entidad": "Oaxaca",
-    "valor": 462
+    "valor": 465
   },
   {
     "entidad": "Puebla",
-    "valor": 554
+    "valor": 556
   },
   {
     "entidad": "Querétaro",
@@ -97,7 +97,7 @@
   },
   {
     "entidad": "Sinaloa",
-    "valor": 1199
+    "valor": 1204
   },
   {
     "entidad": "Sonora",
@@ -117,7 +117,7 @@
   },
   {
     "entidad": "Veracruz de Ignacio de la Llave",
-    "valor": 610
+    "valor": 615
   },
   {
     "entidad": "Yucatán",

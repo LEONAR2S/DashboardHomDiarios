@@ -6,7 +6,7 @@
       "properties": {
         "ID": 33,
         "Entidad Federativa:": "",
-        "Homicidios Totales": 15366
+        "Homicidios Totales": 15414
       },
       "geometry": {
         "type": "Polygon",
@@ -57,7 +57,7 @@
       "properties": {
         "ID": 2,
         "Entidad Federativa:": "Baja California",
-        "Homicidios Totales": 1038
+        "Homicidios Totales": 1041
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -4244,7 +4244,7 @@
       "properties": {
         "ID": 25,
         "Entidad Federativa:": "Sinaloa",
-        "Homicidios Totales": 1199
+        "Homicidios Totales": 1204
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -8762,7 +8762,7 @@
       "properties": {
         "ID": 1,
         "Entidad Federativa:": "Aguascalientes",
-        "Homicidios Totales": 38
+        "Homicidios Totales": 40
       },
       "geometry": {
         "type": "Polygon",
@@ -8913,7 +8913,7 @@
       "properties": {
         "ID": 6,
         "Entidad Federativa:": "Colima",
-        "Homicidios Totales": 1031
+        "Homicidios Totales": 1034
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -9135,7 +9135,7 @@
         "adm1_code": "MEX-2719",
         "ID": 14,
         "Entidad Federativa:": "Jalisco",
-        "Homicidios Totales": 733
+        "Homicidios Totales": 735
       },
       "geometry": {
         "type": "Polygon",
@@ -10146,7 +10146,7 @@
       "properties": {
         "ID": 16,
         "Entidad Federativa:": "Michoacán",
-        "Homicidios Totales": 969
+        "Homicidios Totales": 970
       },
       "geometry": {
         "type": "Polygon",
@@ -10785,7 +10785,7 @@
       "properties": {
         "ID": 18,
         "Entidad Federativa:": "Nayarit",
-        "Homicidios Totales": 117
+        "Homicidios Totales": 118
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -11728,7 +11728,7 @@
         "adm1_code": "MEX-2723",
         "ID": 20,
         "Entidad Federativa:": "Oaxaca",
-        "Homicidios Totales": 462
+        "Homicidios Totales": 465
       },
       "geometry": {
         "type": "Polygon",
@@ -12499,7 +12499,7 @@
       "properties": {
         "ID": 21,
         "Entidad Federativa:": "Puebla",
-        "Homicidios Totales": 554
+        "Homicidios Totales": 556
       },
       "geometry": {
         "type": "Polygon",
@@ -13840,7 +13840,7 @@
       "properties": {
         "ID": 9,
         "Entidad Federativa:": "Ciudad de México",
-        "Homicidios Totales": 342
+        "Homicidios Totales": 343
       },
       "geometry": {
         "type": "Polygon",
@@ -13935,7 +13935,7 @@
       "properties": {
         "ID": 11,
         "Entidad Federativa:": "Guanajuato",
-        "Homicidios Totales": 1750
+        "Homicidios Totales": 1755
       },
       "geometry": {
         "type": "Polygon",
@@ -14382,7 +14382,7 @@
       "properties": {
         "ID": 12,
         "Entidad Federativa:": "Guerrero",
-        "Homicidios Totales": 739
+        "Homicidios Totales": 740
       },
       "geometry": {
         "type": "Polygon",
@@ -14957,7 +14957,7 @@
       "properties": {
         "ID": 13,
         "Entidad Federativa:": "Hidalgo",
-        "Homicidios Totales": 163
+        "Homicidios Totales": 165
       },
       "geometry": {
         "type": "Polygon",
@@ -15404,7 +15404,7 @@
       "properties": {
         "ID": 15,
         "Entidad Federativa:": "Estado de México",
-        "Homicidios Totales": 1147
+        "Homicidios Totales": 1155
       },
       "geometry": {
         "type": "Polygon",
@@ -15807,7 +15807,7 @@
       "properties": {
         "ID": 17,
         "Entidad Federativa:": "Morelos",
-        "Homicidios Totales": 703
+        "Homicidios Totales": 705
       },
       "geometry": {
         "type": "Polygon",
@@ -16309,7 +16309,7 @@
       "properties": {
         "ID": 30,
         "Entidad Federativa:": "Veracruz",
-        "Homicidios Totales": 610
+        "Homicidios Totales": 615
       },
       "geometry": {
         "type": "Polygon",
@@ -17372,7 +17372,7 @@
       "properties": {
         "ID": 7,
         "Entidad Federativa:": "Chiapas",
-        "Homicidios Totales": 545
+        "Homicidios Totales": 547
       },
       "geometry": {
         "type": "MultiPolygon",
