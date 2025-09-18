@@ -166,7 +166,7 @@ const EstadoChartFecha = () => {
         dataZoom: [
   {
     type: 'slider',
-    show: true,
+    show: false,
     start: 0,
     end: 100,
     bottom: 30,
