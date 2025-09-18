@@ -25,6 +25,7 @@ const BarChartEstado = () => {
   const [chartType, setChartType] = useState<'bar' | 'treemap'>('bar');
   const [showAsPercentage, setShowAsPercentage] = useState(false);
   const [showAverageLine, setShowAverageLine] = useState(false);
+  const [useGradientColor, setUseGradientColor] = useState(false);  // ← nuevo estado
 
   const [leyenda50, setLeyenda50] = useState<{ entidades: number; porcentaje: number } | null>(null);
   const [leyendaTop10, setLeyendaTop10] = useState<{ total: number; porcentaje: number } | null>(null);
@@ -54,7 +55,7 @@ const BarChartEstado = () => {
       .then((res) => res.json())
       .then((json) => {
         setData(json);
-        ordenarPorNombre(json);
+        ordenarPorValor(json); // predeterminado: por valor
       })
       .catch((err) => console.error('Error cargando datos:', err));
   }, []);
@@ -69,7 +70,7 @@ const BarChartEstado = () => {
     const maxVal = Math.max(...sortedData.map((d) => d.valor));
 
     const getColorGradient = (value: number, min: number, max: number) => {
-      const ratio = (value - min) / (max - min);
+      const ratio = (value - min) / (max - min || 1);
       const r = Math.round(255 * ratio);
       const g = Math.round(200 * (1 - ratio));
       const b = 100;
@@ -102,11 +103,30 @@ const BarChartEstado = () => {
             series: [
               {
                 type: 'bar',
-                data: sortedData.map((item) =>
-                  showAsPercentage
+                data: sortedData.map((item) => {
+                  const val = showAsPercentage
                     ? parseFloat(((item.valor * 100) / totalHomicidios).toFixed(2))
-                    : item.valor
-                ),
+                    : item.valor;
+
+                  if (useGradientColor) {
+                    // Si se activa el gradiente
+                    return {
+                      value: val,
+                      itemStyle: {
+                        color: getColorGradient(item.valor, minVal, maxVal),
+                      },
+                    };
+                  } else {
+                    // color fijo / predeterminado
+                    return {
+                      value: val,
+                      // puedes poner un color fijo, ej. '#5470C6'
+                      itemStyle: {
+                        color: '#5470C6',
+                      },
+                    };
+                  }
+                }),
                 label: {
                   show: true,
                   position: 'top',
@@ -132,21 +152,9 @@ const BarChartEstado = () => {
                   : {}),
               },
             ],
-            ...(!showAverageLine
-              ? {
-                  visualMap: {
-                    show: false,
-                    dimension: 0,
-                    min: minVal,
-                    max: maxVal,
-                    inRange: {
-                      color: ['#317ccdff', '#c72e1c'],
-                    },
-                  },
-                }
-              : {}),
           }
         : {
+            // Treemap u otro tipo si lo tienes
             title: { text: 'Mapa de Árbol: Homicidios por Estado' },
             tooltip: {
               formatter: (params: any) => {
@@ -159,15 +167,23 @@ const BarChartEstado = () => {
             series: [
               {
                 type: 'treemap',
-                data: sortedData.map((item) => ({
-                  name: item.entidad,
-                  value: showAsPercentage
+                data: sortedData.map((item) => {
+                  const val = showAsPercentage
                     ? parseFloat(((item.valor * 100) / totalHomicidios).toFixed(2))
-                    : item.valor,
-                  itemStyle: {
-                    color: getColorGradient(item.valor, minVal, maxVal),
-                  },
-                })),
+                    : item.valor;
+
+                  const color = useGradientColor
+                    ? getColorGradient(item.valor, minVal, maxVal)
+                    : '#5470C6';
+
+                  return {
+                    name: item.entidad,
+                    value: val,
+                    itemStyle: {
+                      color,
+                    },
+                  };
+                }),
                 label: {
                   show: true,
                   formatter: (info: any) =>
@@ -192,7 +208,7 @@ const BarChartEstado = () => {
       chart.dispose();
       chartInstanceRef.current = null;
     };
-  }, [sortedData, chartType, showAsPercentage, totalHomicidios, showAverageLine]);
+  }, [sortedData, chartType, showAsPercentage, totalHomicidios, showAverageLine, useGradientColor]);
 
   const ordenarPorNombre = (baseData: Datos[] = data) => {
     setLeyenda50(null);
@@ -201,10 +217,10 @@ const BarChartEstado = () => {
     setSortedData(ordenada);
   };
 
-  const ordenarPorValor = () => {
+  const ordenarPorValor = (baseData: Datos[] = data) => {
     setLeyenda50(null);
     setLeyendaTop10(null);
-    const ordenada = [...data].sort((a, b) => b.valor - a.valor);
+    const ordenada = [...baseData].sort((a, b) => b.valor - a.valor);
     setSortedData(ordenada);
   };
 
@@ -242,7 +258,7 @@ const BarChartEstado = () => {
     setLeyenda50(null);
     setLeyendaTop10(null);
     setShowAverageLine(false);
-    ordenarPorNombre(data);
+    ordenarPorValor(data);
   };
 
   const handleDownloadImage = () => {
@@ -269,44 +285,24 @@ const BarChartEstado = () => {
   };
 
   return (
-    <div style={{
-      position: 'relative',
-      padding: '1rem',
-      border: '1px solid #ccc',
-      borderRadius: '8px',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-      background: '#fff',
-      marginBottom: '2rem',
-      width: '100%',
-      boxSizing: 'border-box',
-    }}>
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'flex-end',
-        gap: '10px',
-        marginBottom: '10px',
-        alignItems: 'center',
-      }}>
-        <button onClick={handleDownloadImage} title="Descargar imagen" style={buttonStyle}>
-          <FaDownload />
-        </button>
-        <button onClick={handleDownloadPDF} title="Descargar PDF" style={buttonStyle}>
-          <FaFilePdf />
-        </button>
-        <button onClick={() => ordenarPorNombre()} title="Ordenar por Estado" style={buttonStyle}>
-          <FaSortAlphaDown />
-        </button>
-        <button onClick={ordenarPorValor} title="Ordenar por Valor" style={buttonStyle}>
-          <FaSortAmountDown />
-        </button>
-        <button onClick={mostrarTop10} title="Top 10 estados" style={buttonStyle}>
-          Top 10
-        </button>
-        <button onClick={mostrarTop50Porciento} title="Estados con +50%" style={buttonStyle}>
-          +50%
+    <div style={wrapperStyle}>
+      <div style={toolbarStyle}>
+        <button onClick={handleDownloadImage} title="Descargar imagen" style={buttonStyle}><FaDownload /></button>
+        <button onClick={handleDownloadPDF} title="Descargar PDF" style={buttonStyle}><FaFilePdf /></button>
+        <button onClick={() => ordenarPorNombre()} title="Ordenar por Estado" style={buttonStyle}><FaSortAlphaDown /></button>
+        <button onClick={() => ordenarPorValor()} title="Ordenar por Valor" style={buttonStyle}><FaSortAmountDown /></button>
+
+        {/* Nuevo botón para activar/desactivar gradiente */}
+        <button
+          onClick={() => setUseGradientColor((prev) => !prev)}
+          title={useGradientColor ? "Desactivar gradiente" : "Activar gradiente de color"}
+          style={buttonStyle}
+        >
+          {useGradientColor ? "Gradiente ✔" : "Gradiente ✘"}
         </button>
 
+        <button onClick={mostrarTop10} title="Top 10 estados" style={buttonStyle}>Top 10</button>
+        <button onClick={mostrarTop50Porciento} title="Estados con +50%" style={buttonStyle}>+50%</button>
         <button onClick={() => setChartType((prev) => (prev === 'bar' ? 'treemap' : 'bar'))} title="Cambiar tipo de gráfico" style={buttonStyle}>
           {chartType === 'bar' ? <FaSitemap /> : <FaChartBar />}
         </button>
@@ -320,9 +316,7 @@ const BarChartEstado = () => {
         }} title="Mostrar/Ocultar Promedio Nacional" style={buttonStyle}>
           {showAverageLine ? '🔴 Prom. Nal.' : '⚪ Prom. Nal.'}
         </button>
-        <button onClick={restablecerVistaOriginal} title="Restablecer vista original" style={buttonStyle}>
-          ⟳
-        </button>
+        <button onClick={restablecerVistaOriginal} title="Restablecer vista original" style={buttonStyle}>⟳</button>
         <div style={totalBoxStyle}>Total: {totalHomicidios.toLocaleString()}</div>
       </div>
 
@@ -334,19 +328,41 @@ const BarChartEstado = () => {
 
       {leyenda50 && !showAverageLine && (
         <div style={legendBoxStyle}>
-           {leyenda50.entidades} entidades concentran el {leyenda50.porcentaje}% de los homicidios
+          {leyenda50.entidades} entidades concentran el {leyenda50.porcentaje}% de los homicidios
         </div>
       )}
 
       {leyendaTop10 && !showAverageLine && (
         <div style={legendBoxStyle}>
-           Top 10 entidades acumulan {leyendaTop10.total.toLocaleString()} homicidios ({leyendaTop10.porcentaje}%)
+          Top 10 entidades acumulan {leyendaTop10.total.toLocaleString()} homicidios ({leyendaTop10.porcentaje}%)
         </div>
       )}
 
       <div ref={chartRef} style={{ width: '100%', height: '500px', minHeight: '300px' }} />
     </div>
   );
+};
+
+// Estilos
+const wrapperStyle: React.CSSProperties = {
+  position: 'relative',
+  padding: '1rem',
+  border: '1px solid #ccc',
+  borderRadius: '8px',
+  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+  background: '#fff',
+  marginBottom: '2rem',
+  width: '100%',
+  boxSizing: 'border-box',
+};
+
+const toolbarStyle: React.CSSProperties = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: 'flex-end',
+  gap: '10px',
+  marginBottom: '10px',
+  alignItems: 'center',
 };
 
 const buttonStyle: React.CSSProperties = {
