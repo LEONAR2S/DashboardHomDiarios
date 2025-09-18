@@ -2189,9 +2189,9 @@
     {
       "type": "Feature",
       "properties": {
-        "ID": 5,
+        "ID": 8,
         "Entidad Federativa:": "Coahuila",
-        "Homicidios Totales": 289
+        "Homicidios Totales": 54
       },
       "geometry": {
         "type": "Polygon",
@@ -2916,9 +2916,9 @@
     {
       "type": "Feature",
       "properties": {
-        "ID": 8,
+        "ID": 6,
         "Entidad Federativa:": "Chihuahua",
-        "Homicidios Totales": 54
+        "Homicidios Totales": 1036
       },
       "geometry": {
         "type": "Polygon",
@@ -8911,9 +8911,9 @@
     {
       "type": "Feature",
       "properties": {
-        "ID": 6,
+        "ID": 9,
         "Entidad Federativa:": "Colima",
-        "Homicidios Totales": 1036
+        "Homicidios Totales": 346
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -13838,9 +13838,9 @@
     {
       "type": "Feature",
       "properties": {
-        "ID": 9,
+        "ID": 7,
         "Entidad Federativa:": "Ciudad de México",
-        "Homicidios Totales": 346
+        "Homicidios Totales": 547
       },
       "geometry": {
         "type": "Polygon",
@@ -17370,9 +17370,9 @@
     {
       "type": "Feature",
       "properties": {
-        "ID": 7,
+        "ID": 5,
         "Entidad Federativa:": "Chiapas",
-        "Homicidios Totales": 547
+        "Homicidios Totales": 289
       },
       "geometry": {
         "type": "MultiPolygon",
