@@ -34,13 +34,14 @@ function App() {
 
       <main className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
         <BarChartEstado />
+        <EstadoChartFecha />
         <BarChartEstadoMap />
         <BarChartTrim />
         <BarChartMes />
         <BarChartSemana />
         <BarChartDia />
         <BarChartFecha />
-        <EstadoChartFecha />
+
       </main>
     </div>
   );
