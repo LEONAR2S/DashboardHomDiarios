@@ -1,7 +1,7 @@
 [
   {
     "dia_nombre": "domingo",
-    "valor": 2441
+    "valor": 2501
   },
   {
     "dia_nombre": "jueves",
@@ -21,10 +21,10 @@
   },
   {
     "dia_nombre": "sábado",
-    "valor": 2158
+    "valor": 2212
   },
   {
     "dia_nombre": "viernes",
-    "valor": 2231
+    "valor": 2287
   }
 ]

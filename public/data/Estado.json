@@ -1,15 +1,15 @@
 [
   {
     "entidad": "Aguascalientes",
-    "valor": 40
+    "valor": 44
   },
   {
     "entidad": "Baja California",
-    "valor": 1049
+    "valor": 1060
   },
   {
     "entidad": "Baja California Sur",
-    "valor": 79
+    "valor": 81
   },
   {
     "entidad": "Campeche",
@@ -17,23 +17,23 @@
   },
   {
     "entidad": "Chiapas",
-    "valor": 289
+    "valor": 291
   },
   {
     "entidad": "Chihuahua",
-    "valor": 1041
+    "valor": 1056
   },
   {
     "entidad": "Ciudad de México",
-    "valor": 547
+    "valor": 556
   },
   {
     "entidad": "Coahuila de Zaragoza",
-    "valor": 54
+    "valor": 55
   },
   {
     "entidad": "Colima",
-    "valor": 350
+    "valor": 355
   },
   {
     "entidad": "Durango",
@@ -41,55 +41,55 @@
   },
   {
     "entidad": "Guanajuato",
-    "valor": 1764
+    "valor": 1782
   },
   {
     "entidad": "Guerrero",
-    "valor": 745
+    "valor": 755
   },
   {
     "entidad": "Hidalgo",
-    "valor": 166
+    "valor": 167
   },
   {
     "entidad": "Jalisco",
-    "valor": 739
+    "valor": 744
   },
   {
     "entidad": "Michoacán de Ocampo",
-    "valor": 972
+    "valor": 984
   },
   {
     "entidad": "Morelos",
-    "valor": 710
+    "valor": 721
   },
   {
     "entidad": "México",
-    "valor": 1162
+    "valor": 1171
   },
   {
     "entidad": "Nayarit",
-    "valor": 119
+    "valor": 120
   },
   {
     "entidad": "Nuevo León",
-    "valor": 578
+    "valor": 589
   },
   {
     "entidad": "Oaxaca",
-    "valor": 471
+    "valor": 478
   },
   {
     "entidad": "Puebla",
-    "valor": 559
+    "valor": 562
   },
   {
     "entidad": "Querétaro",
-    "valor": 46
+    "valor": 48
   },
   {
     "entidad": "Quintana Roo",
-    "valor": 238
+    "valor": 240
   },
   {
     "entidad": "San Luis Potosí",
@@ -97,19 +97,19 @@
   },
   {
     "entidad": "Sinaloa",
-    "valor": 1215
+    "valor": 1224
   },
   {
     "entidad": "Sonora",
-    "valor": 771
+    "valor": 775
   },
   {
     "entidad": "Tabasco",
-    "valor": 565
+    "valor": 571
   },
   {
     "entidad": "Tamaulipas",
-    "valor": 162
+    "valor": 163
   },
   {
     "entidad": "Tlaxcala",
@@ -117,7 +117,7 @@
   },
   {
     "entidad": "Veracruz de Ignacio de la Llave",
-    "valor": 618
+    "valor": 627
   },
   {
     "entidad": "Yucatán",
