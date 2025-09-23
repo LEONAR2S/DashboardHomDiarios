@@ -6,6 +6,7 @@ import BarChartEstado from './components/BarChartEstado';
 import BarChartFecha from './components/BarChartFecha';
 import BarChartSemana from './components/BarChartSemana';
 import BarChartEstadoMap from './components/BarChartEstadoMap';
+import BarChartEstadoMapxHab from './components/BarChartEstadoMapxHab';
 import EstadoChartFecha from './components/EstadoChartFecha';
 import './index.css';
 
@@ -36,6 +37,7 @@ function App() {
         <BarChartEstado />
         <EstadoChartFecha />
         <BarChartEstadoMap />
+        <BarChartEstadoMapxHab />
         <BarChartTrim />
         <BarChartMes />
         <BarChartSemana />
