@@ -34838,5 +34838,655 @@
       "entidad": "Zacatecas",
       "valor": 0
     }
+  ],
+  "26/09/2025": [
+    {
+      "entidad": "Aguascalientes",
+      "valor": 0
+    },
+    {
+      "entidad": "Baja California",
+      "valor": 0
+    },
+    {
+      "entidad": "Baja California Sur",
+      "valor": 0
+    },
+    {
+      "entidad": "Campeche",
+      "valor": 1
+    },
+    {
+      "entidad": "Chiapas",
+      "valor": 1
+    },
+    {
+      "entidad": "Chihuahua",
+      "valor": 2
+    },
+    {
+      "entidad": "Ciudad de México",
+      "valor": 3
+    },
+    {
+      "entidad": "Coahuila de Zaragoza",
+      "valor": 0
+    },
+    {
+      "entidad": "Colima",
+      "valor": 2
+    },
+    {
+      "entidad": "Durango",
+      "valor": 0
+    },
+    {
+      "entidad": "Guanajuato",
+      "valor": 1
+    },
+    {
+      "entidad": "Guerrero",
+      "valor": 0
+    },
+    {
+      "entidad": "Hidalgo",
+      "valor": 0
+    },
+    {
+      "entidad": "Jalisco",
+      "valor": 0
+    },
+    {
+      "entidad": "Michoacán de Ocampo",
+      "valor": 1
+    },
+    {
+      "entidad": "Morelos",
+      "valor": 2
+    },
+    {
+      "entidad": "México",
+      "valor": 4
+    },
+    {
+      "entidad": "Nayarit",
+      "valor": 0
+    },
+    {
+      "entidad": "Nuevo León",
+      "valor": 1
+    },
+    {
+      "entidad": "Oaxaca",
+      "valor": 0
+    },
+    {
+      "entidad": "Puebla",
+      "valor": 1
+    },
+    {
+      "entidad": "Querétaro",
+      "valor": 0
+    },
+    {
+      "entidad": "Quintana Roo",
+      "valor": 0
+    },
+    {
+      "entidad": "San Luis Potosí",
+      "valor": 0
+    },
+    {
+      "entidad": "Sinaloa",
+      "valor": 5
+    },
+    {
+      "entidad": "Sonora",
+      "valor": 0
+    },
+    {
+      "entidad": "Tabasco",
+      "valor": 2
+    },
+    {
+      "entidad": "Tamaulipas",
+      "valor": 0
+    },
+    {
+      "entidad": "Tlaxcala",
+      "valor": 0
+    },
+    {
+      "entidad": "Veracruz de Ignacio de la Llave",
+      "valor": 6
+    },
+    {
+      "entidad": "Yucatán",
+      "valor": 0
+    },
+    {
+      "entidad": "Zacatecas",
+      "valor": 0
+    }
+  ],
+  "27/09/2025": [
+    {
+      "entidad": "Aguascalientes",
+      "valor": 0
+    },
+    {
+      "entidad": "Baja California",
+      "valor": 3
+    },
+    {
+      "entidad": "Baja California Sur",
+      "valor": 0
+    },
+    {
+      "entidad": "Campeche",
+      "valor": 0
+    },
+    {
+      "entidad": "Chiapas",
+      "valor": 1
+    },
+    {
+      "entidad": "Chihuahua",
+      "valor": 2
+    },
+    {
+      "entidad": "Ciudad de México",
+      "valor": 5
+    },
+    {
+      "entidad": "Coahuila de Zaragoza",
+      "valor": 0
+    },
+    {
+      "entidad": "Colima",
+      "valor": 0
+    },
+    {
+      "entidad": "Durango",
+      "valor": 0
+    },
+    {
+      "entidad": "Guanajuato",
+      "valor": 5
+    },
+    {
+      "entidad": "Guerrero",
+      "valor": 3
+    },
+    {
+      "entidad": "Hidalgo",
+      "valor": 0
+    },
+    {
+      "entidad": "Jalisco",
+      "valor": 1
+    },
+    {
+      "entidad": "Michoacán de Ocampo",
+      "valor": 3
+    },
+    {
+      "entidad": "Morelos",
+      "valor": 3
+    },
+    {
+      "entidad": "México",
+      "valor": 4
+    },
+    {
+      "entidad": "Nayarit",
+      "valor": 0
+    },
+    {
+      "entidad": "Nuevo León",
+      "valor": 2
+    },
+    {
+      "entidad": "Oaxaca",
+      "valor": 1
+    },
+    {
+      "entidad": "Puebla",
+      "valor": 1
+    },
+    {
+      "entidad": "Querétaro",
+      "valor": 0
+    },
+    {
+      "entidad": "Quintana Roo",
+      "valor": 0
+    },
+    {
+      "entidad": "San Luis Potosí",
+      "valor": 0
+    },
+    {
+      "entidad": "Sinaloa",
+      "valor": 5
+    },
+    {
+      "entidad": "Sonora",
+      "valor": 3
+    },
+    {
+      "entidad": "Tabasco",
+      "valor": 0
+    },
+    {
+      "entidad": "Tamaulipas",
+      "valor": 0
+    },
+    {
+      "entidad": "Tlaxcala",
+      "valor": 1
+    },
+    {
+      "entidad": "Veracruz de Ignacio de la Llave",
+      "valor": 3
+    },
+    {
+      "entidad": "Yucatán",
+      "valor": 0
+    },
+    {
+      "entidad": "Zacatecas",
+      "valor": 0
+    }
+  ],
+  "28/09/2025": [
+    {
+      "entidad": "Aguascalientes",
+      "valor": 0
+    },
+    {
+      "entidad": "Baja California",
+      "valor": 6
+    },
+    {
+      "entidad": "Baja California Sur",
+      "valor": 0
+    },
+    {
+      "entidad": "Campeche",
+      "valor": 0
+    },
+    {
+      "entidad": "Chiapas",
+      "valor": 1
+    },
+    {
+      "entidad": "Chihuahua",
+      "valor": 2
+    },
+    {
+      "entidad": "Ciudad de México",
+      "valor": 4
+    },
+    {
+      "entidad": "Coahuila de Zaragoza",
+      "valor": 0
+    },
+    {
+      "entidad": "Colima",
+      "valor": 0
+    },
+    {
+      "entidad": "Durango",
+      "valor": 0
+    },
+    {
+      "entidad": "Guanajuato",
+      "valor": 5
+    },
+    {
+      "entidad": "Guerrero",
+      "valor": 2
+    },
+    {
+      "entidad": "Hidalgo",
+      "valor": 0
+    },
+    {
+      "entidad": "Jalisco",
+      "valor": 3
+    },
+    {
+      "entidad": "Michoacán de Ocampo",
+      "valor": 4
+    },
+    {
+      "entidad": "Morelos",
+      "valor": 4
+    },
+    {
+      "entidad": "México",
+      "valor": 4
+    },
+    {
+      "entidad": "Nayarit",
+      "valor": 0
+    },
+    {
+      "entidad": "Nuevo León",
+      "valor": 3
+    },
+    {
+      "entidad": "Oaxaca",
+      "valor": 2
+    },
+    {
+      "entidad": "Puebla",
+      "valor": 4
+    },
+    {
+      "entidad": "Querétaro",
+      "valor": 1
+    },
+    {
+      "entidad": "Quintana Roo",
+      "valor": 0
+    },
+    {
+      "entidad": "San Luis Potosí",
+      "valor": 0
+    },
+    {
+      "entidad": "Sinaloa",
+      "valor": 5
+    },
+    {
+      "entidad": "Sonora",
+      "valor": 1
+    },
+    {
+      "entidad": "Tabasco",
+      "valor": 1
+    },
+    {
+      "entidad": "Tamaulipas",
+      "valor": 4
+    },
+    {
+      "entidad": "Tlaxcala",
+      "valor": 0
+    },
+    {
+      "entidad": "Veracruz de Ignacio de la Llave",
+      "valor": 3
+    },
+    {
+      "entidad": "Yucatán",
+      "valor": 0
+    },
+    {
+      "entidad": "Zacatecas",
+      "valor": 0
+    }
+  ],
+  "29/09/2025": [
+    {
+      "entidad": "Aguascalientes",
+      "valor": 0
+    },
+    {
+      "entidad": "Baja California",
+      "valor": 0
+    },
+    {
+      "entidad": "Baja California Sur",
+      "valor": 0
+    },
+    {
+      "entidad": "Campeche",
+      "valor": 0
+    },
+    {
+      "entidad": "Chiapas",
+      "valor": 0
+    },
+    {
+      "entidad": "Chihuahua",
+      "valor": 3
+    },
+    {
+      "entidad": "Ciudad de México",
+      "valor": 2
+    },
+    {
+      "entidad": "Coahuila de Zaragoza",
+      "valor": 0
+    },
+    {
+      "entidad": "Colima",
+      "valor": 0
+    },
+    {
+      "entidad": "Durango",
+      "valor": 0
+    },
+    {
+      "entidad": "Guanajuato",
+      "valor": 1
+    },
+    {
+      "entidad": "Guerrero",
+      "valor": 1
+    },
+    {
+      "entidad": "Hidalgo",
+      "valor": 0
+    },
+    {
+      "entidad": "Jalisco",
+      "valor": 4
+    },
+    {
+      "entidad": "Michoacán de Ocampo",
+      "valor": 7
+    },
+    {
+      "entidad": "Morelos",
+      "valor": 4
+    },
+    {
+      "entidad": "México",
+      "valor": 3
+    },
+    {
+      "entidad": "Nayarit",
+      "valor": 0
+    },
+    {
+      "entidad": "Nuevo León",
+      "valor": 1
+    },
+    {
+      "entidad": "Oaxaca",
+      "valor": 1
+    },
+    {
+      "entidad": "Puebla",
+      "valor": 1
+    },
+    {
+      "entidad": "Querétaro",
+      "valor": 0
+    },
+    {
+      "entidad": "Quintana Roo",
+      "valor": 2
+    },
+    {
+      "entidad": "San Luis Potosí",
+      "valor": 0
+    },
+    {
+      "entidad": "Sinaloa",
+      "valor": 3
+    },
+    {
+      "entidad": "Sonora",
+      "valor": 4
+    },
+    {
+      "entidad": "Tabasco",
+      "valor": 1
+    },
+    {
+      "entidad": "Tamaulipas",
+      "valor": 1
+    },
+    {
+      "entidad": "Tlaxcala",
+      "valor": 0
+    },
+    {
+      "entidad": "Veracruz de Ignacio de la Llave",
+      "valor": 2
+    },
+    {
+      "entidad": "Yucatán",
+      "valor": 0
+    },
+    {
+      "entidad": "Zacatecas",
+      "valor": 0
+    }
+  ],
+  "30/09/2025": [
+    {
+      "entidad": "Aguascalientes",
+      "valor": 0
+    },
+    {
+      "entidad": "Baja California",
+      "valor": 5
+    },
+    {
+      "entidad": "Baja California Sur",
+      "valor": 0
+    },
+    {
+      "entidad": "Campeche",
+      "valor": 1
+    },
+    {
+      "entidad": "Chiapas",
+      "valor": 0
+    },
+    {
+      "entidad": "Chihuahua",
+      "valor": 2
+    },
+    {
+      "entidad": "Ciudad de México",
+      "valor": 2
+    },
+    {
+      "entidad": "Coahuila de Zaragoza",
+      "valor": 0
+    },
+    {
+      "entidad": "Colima",
+      "valor": 1
+    },
+    {
+      "entidad": "Durango",
+      "valor": 0
+    },
+    {
+      "entidad": "Guanajuato",
+      "valor": 4
+    },
+    {
+      "entidad": "Guerrero",
+      "valor": 7
+    },
+    {
+      "entidad": "Hidalgo",
+      "valor": 3
+    },
+    {
+      "entidad": "Jalisco",
+      "valor": 0
+    },
+    {
+      "entidad": "Michoacán de Ocampo",
+      "valor": 5
+    },
+    {
+      "entidad": "Morelos",
+      "valor": 4
+    },
+    {
+      "entidad": "México",
+      "valor": 5
+    },
+    {
+      "entidad": "Nayarit",
+      "valor": 0
+    },
+    {
+      "entidad": "Nuevo León",
+      "valor": 3
+    },
+    {
+      "entidad": "Oaxaca",
+      "valor": 1
+    },
+    {
+      "entidad": "Puebla",
+      "valor": 3
+    },
+    {
+      "entidad": "Querétaro",
+      "valor": 0
+    },
+    {
+      "entidad": "Quintana Roo",
+      "valor": 3
+    },
+    {
+      "entidad": "San Luis Potosí",
+      "valor": 0
+    },
+    {
+      "entidad": "Sinaloa",
+      "valor": 4
+    },
+    {
+      "entidad": "Sonora",
+      "valor": 3
+    },
+    {
+      "entidad": "Tabasco",
+      "valor": 0
+    },
+    {
+      "entidad": "Tamaulipas",
+      "valor": 0
+    },
+    {
+      "entidad": "Tlaxcala",
+      "valor": 0
+    },
+    {
+      "entidad": "Veracruz de Ignacio de la Llave",
+      "valor": 4
+    },
+    {
+      "entidad": "Yucatán",
+      "valor": 0
+    },
+    {
+      "entidad": "Zacatecas",
+      "valor": 0
+    }
   ]
 }

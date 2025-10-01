@@ -1,7 +1,7 @@
 [
   {
     "dia_nombre": "domingo",
-    "valor": 2501
+    "valor": 2560
   },
   {
     "dia_nombre": "jueves",
@@ -9,11 +9,11 @@
   },
   {
     "dia_nombre": "lunes",
-    "valor": 2341
+    "valor": 2382
   },
   {
     "dia_nombre": "martes",
-    "valor": 2104
+    "valor": 2164
   },
   {
     "dia_nombre": "miércoles",
@@ -21,10 +21,10 @@
   },
   {
     "dia_nombre": "sábado",
-    "valor": 2212
+    "valor": 2258
   },
   {
     "dia_nombre": "viernes",
-    "valor": 2287
+    "valor": 2319
   }
 ]
