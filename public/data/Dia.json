@@ -1,30 +1,30 @@
 [
   {
     "dia_nombre": "domingo",
-    "valor": 2560
+    "valor": 2612
   },
   {
     "dia_nombre": "jueves",
-    "valor": 2202
+    "valor": 2249
   },
   {
     "dia_nombre": "lunes",
-    "valor": 2382
+    "valor": 2445
   },
   {
     "dia_nombre": "martes",
-    "valor": 2164
+    "valor": 2219
   },
   {
     "dia_nombre": "miércoles",
-    "valor": 2230
+    "valor": 2335
   },
   {
     "dia_nombre": "sábado",
-    "valor": 2258
+    "valor": 2309
   },
   {
     "dia_nombre": "viernes",
-    "valor": 2319
+    "valor": 2360
   }
 ]
