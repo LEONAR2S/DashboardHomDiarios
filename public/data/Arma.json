@@ -1,0 +1,194 @@
+[
+  {
+    "entidad": "Aguascalientes",
+    "Largas": 9,
+    "Cortas": 142,
+    "total": 151
+  },
+  {
+    "entidad": "Baja California",
+    "Largas": 218,
+    "Cortas": 295,
+    "total": 513
+  },
+  {
+    "entidad": "Baja California Sur",
+    "Largas": 3,
+    "Cortas": 8,
+    "total": 11
+  },
+  {
+    "entidad": "Campeche",
+    "Largas": 24,
+    "Cortas": 44,
+    "total": 68
+  },
+  {
+    "entidad": "Chiapas",
+    "Largas": 489,
+    "Cortas": 211,
+    "total": 700
+  },
+  {
+    "entidad": "Chihuahua",
+    "Largas": 161,
+    "Cortas": 213,
+    "total": 374
+  },
+  {
+    "entidad": "Ciudad de México",
+    "Largas": 90,
+    "Cortas": 809,
+    "total": 899
+  },
+  {
+    "entidad": "Coahuila de Zaragoza",
+    "Largas": 25,
+    "Cortas": 36,
+    "total": 61
+  },
+  {
+    "entidad": "Colima",
+    "Largas": 29,
+    "Cortas": 75,
+    "total": 104
+  },
+  {
+    "entidad": "Durango",
+    "Largas": 6,
+    "Cortas": 13,
+    "total": 19
+  },
+  {
+    "entidad": "Guanajuato",
+    "Largas": 36,
+    "Cortas": 89,
+    "total": 125
+  },
+  {
+    "entidad": "Guerrero",
+    "Largas": 107,
+    "Cortas": 213,
+    "total": 320
+  },
+  {
+    "entidad": "Hidalgo",
+    "Largas": 33,
+    "Cortas": 112,
+    "total": 145
+  },
+  {
+    "entidad": "Jalisco",
+    "Largas": 36,
+    "Cortas": 77,
+    "total": 113
+  },
+  {
+    "entidad": "México",
+    "Largas": 186,
+    "Cortas": 610,
+    "total": 796
+  },
+  {
+    "entidad": "Michoacán de Ocampo",
+    "Largas": 336,
+    "Cortas": 187,
+    "total": 523
+  },
+  {
+    "entidad": "Morelos",
+    "Largas": 56,
+    "Cortas": 189,
+    "total": 245
+  },
+  {
+    "entidad": "Nayarit",
+    "Largas": 13,
+    "Cortas": 20,
+    "total": 33
+  },
+  {
+    "entidad": "Nuevo León",
+    "Largas": 316,
+    "Cortas": 333,
+    "total": 649
+  },
+  {
+    "entidad": "Oaxaca",
+    "Largas": 50,
+    "Cortas": 164,
+    "total": 214
+  },
+  {
+    "entidad": "Puebla",
+    "Largas": 35,
+    "Cortas": 122,
+    "total": 157
+  },
+  {
+    "entidad": "Querétaro",
+    "Largas": 27,
+    "Cortas": 66,
+    "total": 93
+  },
+  {
+    "entidad": "Quintana Roo",
+    "Largas": 60,
+    "Cortas": 212,
+    "total": 272
+  },
+  {
+    "entidad": "San Luis Potosí",
+    "Largas": 123,
+    "Cortas": 138,
+    "total": 261
+  },
+  {
+    "entidad": "Sinaloa",
+    "Largas": 24,
+    "Cortas": 79,
+    "total": 103
+  },
+  {
+    "entidad": "Sonora",
+    "Largas": 184,
+    "Cortas": 109,
+    "total": 293
+  },
+  {
+    "entidad": "Tabasco",
+    "Largas": 144,
+    "Cortas": 114,
+    "total": 258
+  },
+  {
+    "entidad": "Tamaulipas",
+    "Largas": 143,
+    "Cortas": 33,
+    "total": 176
+  },
+  {
+    "entidad": "Tlaxcala",
+    "Largas": 18,
+    "Cortas": 33,
+    "total": 51
+  },
+  {
+    "entidad": "Veracruz de Ignacio de la Llave",
+    "Largas": 463,
+    "Cortas": 385,
+    "total": 848
+  },
+  {
+    "entidad": "Yucatán",
+    "Largas": 6,
+    "Cortas": 12,
+    "total": 18
+  },
+  {
+    "entidad": "Zacatecas",
+    "Largas": 62,
+    "Cortas": 13,
+    "total": 75
+  }
+]
