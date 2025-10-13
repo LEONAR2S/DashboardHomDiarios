@@ -155,7 +155,7 @@ const ConsultaEventos: React.FC<Props> = ({ jsonUrl, pageSize = 50 }) => {
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-100 p-6 rounded-2xl shadow-xl border border-indigo-200">
       <h2 className="text-3xl font-bold text-indigo-800 mb-6 text-center">
-        📋 Consulta de Eventos Policiales
+        📋 Consulta de Eventos
       </h2>
 
       {loading ? (
