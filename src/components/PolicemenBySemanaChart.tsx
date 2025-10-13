@@ -83,12 +83,12 @@ const PolicemenBySemanaChart: React.FC = () => {
       map[key].valor += 1;
     }
     return Object.entries(map)
-      .map(([key, rec]) => ({
-        label: `${rec.año} ${rec.semanaLabel}`, // e.g. "2024 Sem 28 (08 jul - 14 jul)"
-        año: rec.año,
-        numeroSemana: rec.numeroSemana,
-        valor: rec.valor,
-      }))
+.map(([, rec]) => ({
+  label: `${rec.año} ${rec.semanaLabel}`,
+  año: rec.año,
+  numeroSemana: rec.numeroSemana,
+  valor: rec.valor,
+}))
       .sort((a, b) => {
         if (a.año !== b.año) return a.año - b.año;
         return a.numeroSemana - b.numeroSemana;
