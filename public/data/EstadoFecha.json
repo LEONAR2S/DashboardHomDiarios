@@ -36658,5 +36658,135 @@
       "entidad": "Zacatecas",
       "valor": 0
     }
+  ],
+  "10/10/2025": [
+    {
+      "entidad": "Aguascalientes",
+      "valor": 0
+    },
+    {
+      "entidad": "Baja California",
+      "valor": 3
+    },
+    {
+      "entidad": "Baja California Sur",
+      "valor": 0
+    },
+    {
+      "entidad": "Campeche",
+      "valor": 0
+    },
+    {
+      "entidad": "Chiapas",
+      "valor": 0
+    },
+    {
+      "entidad": "Chihuahua",
+      "valor": 2
+    },
+    {
+      "entidad": "Ciudad de México",
+      "valor": 1
+    },
+    {
+      "entidad": "Coahuila de Zaragoza",
+      "valor": 0
+    },
+    {
+      "entidad": "Colima",
+      "valor": 2
+    },
+    {
+      "entidad": "Durango",
+      "valor": 0
+    },
+    {
+      "entidad": "Guanajuato",
+      "valor": 5
+    },
+    {
+      "entidad": "Guerrero",
+      "valor": 4
+    },
+    {
+      "entidad": "Hidalgo",
+      "valor": 0
+    },
+    {
+      "entidad": "Jalisco",
+      "valor": 3
+    },
+    {
+      "entidad": "Michoacán de Ocampo",
+      "valor": 5
+    },
+    {
+      "entidad": "Morelos",
+      "valor": 1
+    },
+    {
+      "entidad": "México",
+      "valor": 5
+    },
+    {
+      "entidad": "Nayarit",
+      "valor": 0
+    },
+    {
+      "entidad": "Nuevo León",
+      "valor": 2
+    },
+    {
+      "entidad": "Oaxaca",
+      "valor": 2
+    },
+    {
+      "entidad": "Puebla",
+      "valor": 1
+    },
+    {
+      "entidad": "Querétaro",
+      "valor": 0
+    },
+    {
+      "entidad": "Quintana Roo",
+      "valor": 0
+    },
+    {
+      "entidad": "San Luis Potosí",
+      "valor": 0
+    },
+    {
+      "entidad": "Sinaloa",
+      "valor": 4
+    },
+    {
+      "entidad": "Sonora",
+      "valor": 1
+    },
+    {
+      "entidad": "Tabasco",
+      "valor": 2
+    },
+    {
+      "entidad": "Tamaulipas",
+      "valor": 0
+    },
+    {
+      "entidad": "Tlaxcala",
+      "valor": 0
+    },
+    {
+      "entidad": "Veracruz de Ignacio de la Llave",
+      "valor": 0
+    },
+    {
+      "entidad": "Yucatán",
+      "valor": 0
+    },
+    {
+      "entidad": "Zacatecas",
+      "valor": 1
+    }
   ]
 }

@@ -1,0 +1,130 @@
+[
+  {
+    "entidad": "Aguascalientes",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Baja California",
+    "tomas_clandestinas": 2
+  },
+  {
+    "entidad": "Baja California Sur",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Campeche",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Chiapas",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Chihuahua",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Ciudad de México",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Coahuila de Zaragoza",
+    "tomas_clandestinas": 1
+  },
+  {
+    "entidad": "Colima",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Durango",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Guanajuato",
+    "tomas_clandestinas": 2
+  },
+  {
+    "entidad": "Guerrero",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Hidalgo",
+    "tomas_clandestinas": 32
+  },
+  {
+    "entidad": "Jalisco",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "México",
+    "tomas_clandestinas": 96
+  },
+  {
+    "entidad": "Michoacán de Ocampo",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Morelos",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Nayarit",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Nuevo León",
+    "tomas_clandestinas": 3
+  },
+  {
+    "entidad": "Oaxaca",
+    "tomas_clandestinas": 20
+  },
+  {
+    "entidad": "Puebla",
+    "tomas_clandestinas": 14
+  },
+  {
+    "entidad": "Querétaro",
+    "tomas_clandestinas": 2
+  },
+  {
+    "entidad": "Quintana Roo",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "San Luis Potosí",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Sinaloa",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Sonora",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Tabasco",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Tamaulipas",
+    "tomas_clandestinas": 3
+  },
+  {
+    "entidad": "Tlaxcala",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Veracruz",
+    "tomas_clandestinas": 231
+  },
+  {
+    "entidad": "Yucatán",
+    "tomas_clandestinas": 0
+  },
+  {
+    "entidad": "Zacatecas",
+    "tomas_clandestinas": 0
+  }
+]
