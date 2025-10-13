@@ -1,5 +1,26 @@
-import * as echarts from 'echarts';
-import { useEffect, useRef, useState, useMemo } from 'react';
+// ✅ Versión tipada y sin errores en `option`
+import { useEffect, useMemo, useRef, useState } from 'react';
+
+// ECharts (API modular para mejores tipos y bundle más chico)
+import * as echarts from 'echarts/core';
+import {
+  BarChart,
+  LineChart,
+  TreemapChart,
+  type BarSeriesOption,
+  type LineSeriesOption,
+  type TreemapSeriesOption,
+} from 'echarts/charts';
+import {
+  GridComponent,
+  TitleComponent,
+  TooltipComponent,
+  type GridComponentOption,
+  type TitleComponentOption,
+  type TooltipComponentOption,
+} from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
+
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import {
@@ -10,6 +31,14 @@ import {
   FaChartLine,
   FaUndo,
 } from 'react-icons/fa';
+
+// Registrar lo que usaremos
+echarts.use([BarChart, LineChart, TreemapChart, GridComponent, TitleComponent, TooltipComponent, CanvasRenderer]);
+
+// 🔒 Opciones compuestas exactas que usaremos
+type EChartsOption = echarts.ComposeOption<
+  TitleComponentOption | TooltipComponentOption | GridComponentOption | BarSeriesOption | LineSeriesOption | TreemapSeriesOption
+>;
 
 type RecordFull = {
   ID: number;
@@ -27,6 +56,32 @@ interface YearCount {
 const TODOS_ESTADOS = '__TODOS__';
 const TODOS_MUNICIPIOS = '__TODOS__';
 
+const wrapperStyle: React.CSSProperties = {
+  padding: '1rem',
+  border: '1px solid #ccc',
+  borderRadius: '8px',
+  background: '#fff',
+  boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+};
+
+const toolbarStyle: React.CSSProperties = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: 'flex-end',
+  gap: '8px',
+  marginBottom: '10px',
+  alignItems: 'center',
+};
+
+const buttonStyle: React.CSSProperties = {
+  border: '1px solid #ddd',
+  borderRadius: 6,
+  cursor: 'pointer',
+  fontSize: '14px',
+  padding: '6px 8px',
+  background: 'none',
+};
+
 const PolicemenByYearChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstanceRef = useRef<echarts.EChartsType | null>(null);
@@ -39,11 +94,8 @@ const PolicemenByYearChart: React.FC = () => {
   const [chartType, setChartType] = useState<'bar' | 'treemap' | 'line'>('line');
   const [useGradientColor, setUseGradientColor] = useState<boolean>(true);
   const [showAsPercentage, setShowAsPercentage] = useState(false);
-
-  // 🔥 NUEVO: Toggle para Promedio
   const [showAverageLine, setShowAverageLine] = useState<boolean>(false);
 
-  // Carga
   const [loading, setLoading] = useState<boolean>(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -117,18 +169,14 @@ const PolicemenByYearChart: React.FC = () => {
     const el = chartRef.current;
     if (!el) return;
 
-    // Crear instancia si no existe
     if (!chartInstanceRef.current) {
       chartInstanceRef.current = echarts.init(el);
     }
     const chart = chartInstanceRef.current;
 
-    // Si no hay data
     if (!data.length) {
       chart.clear();
-      chart.setOption({
-        title: { text: 'Sin datos', left: 'center', top: 'middle' },
-      } as echarts.EChartsOption);
+      chart.setOption({ title: { text: 'Sin datos', left: 'center', top: 'middle' } } as EChartsOption);
       return;
     }
 
@@ -136,7 +184,8 @@ const PolicemenByYearChart: React.FC = () => {
     const minVal = Math.min(...data.map((d) => d.valor));
     const maxVal = Math.max(...data.map((d) => d.valor));
     const getColorGradient = (v: number): string => {
-      const ratio = (v - minVal) / (maxVal - minVal || 1);
+      const denom = maxVal - minVal;
+      const ratio = denom === 0 ? 0.5 : (v - minVal) / denom; // evita NaN
       const r = Math.round(255 * ratio);
       const g = Math.round(200 * (1 - ratio));
       const b = 100;
@@ -157,100 +206,117 @@ const PolicemenByYearChart: React.FC = () => {
         ? `Policías asesinados en estado ${selectedEstado}`
         : `Policías asesinados en ${selectedMunicipio}, ${selectedEstado}`;
 
-    // markLine para promedio (solo en bar/line)
-    const averageValueForAxis = showAsPercentage ? parseFloat(promedioPct.toFixed(2)) : parseFloat(promedioAbs.toFixed(2));
-    const markLine =
-      showAverageLine && chartType !== 'treemap'
-        ? {
-            symbol: 'none',
+    const averageValueForAxis = showAsPercentage
+      ? parseFloat(promedioPct.toFixed(2))
+      : parseFloat(promedioAbs.toFixed(2));
+
+    // ⚠️ markLine sólo para bar/line; casteamos al tipo de series correspondiente
+    const commonSeriesProps = {
+      label: {
+        show: true,
+        position: 'top' as const,
+        fontSize: 10,
+        color: '#333',
+        formatter: (val: any) =>
+          showAsPercentage ? `${Number(val.value).toFixed(2)}%` : Number(val.value).toLocaleString(),
+      },
+      // itemStyle con color dinámico
+      itemStyle: {
+        color: (params: any) => {
+          const v = data[params.dataIndex].valor;
+          return useGradientColor ? getColorGradient(v) : '#5470C6';
+        },
+      },
+    };
+
+    let option: EChartsOption;
+
+    if (chartType === 'treemap') {
+      option = {
+        title: { text: baseTitle, left: 'center' },
+        tooltip: {
+          formatter: (p: any) =>
+            `${p.name}: ${showAsPercentage ? `${Number(p.value).toFixed(2)}%` : Number(p.value).toLocaleString()}`,
+        },
+        series: [
+          {
+            type: 'treemap',
+            roam: false,
+            breadcrumb: { show: false },
+            data: data.map((d, idx) => ({
+              name: d.año.toString(),
+              value: ySeriesData[idx],
+              itemStyle: {
+                color: useGradientColor ? getColorGradient(d.valor) : '#5470C6',
+              },
+            })),
             label: {
               show: true,
-              formatter: () =>
-                `Promedio: ${showAsPercentage ? `${averageValueForAxis.toFixed(2)}%` : averageValueForAxis.toFixed(2)}`,
-              color: '#222',
+              formatter: (info: any) =>
+                `${info.name}\n${showAsPercentage ? `${Number(info.value).toFixed(2)}%` : Number(info.value).toLocaleString()}`,
             },
-            lineStyle: {
-              type: 'dashed',
-              color: '#d62728',
-              width: 2,
-            },
-            data: [{ yAxis: averageValueForAxis }],
-          }
-        : undefined;
+          } as TreemapSeriesOption,
+        ],
+      };
+    } else {
+      // bar o line
+      const series =
+        chartType === 'bar'
+          ? ({
+              type: 'bar',
+              data: ySeriesData,
+              ...(commonSeriesProps as Omit<BarSeriesOption, 'type' | 'data'>),
+              markLine: showAverageLine
+                ? {
+                    symbol: 'none',
+                    label: {
+                      show: true,
+                      formatter: () =>
+                        `Promedio: ${showAsPercentage ? `${averageValueForAxis.toFixed(2)}%` : averageValueForAxis.toFixed(2)}`,
+                      color: '#222',
+                    },
+                    lineStyle: { type: 'dashed', color: '#d62728', width: 2 },
+                    data: [{ yAxis: averageValueForAxis }],
+                  }
+                : undefined,
+            } as BarSeriesOption)
+          : ({
+              type: 'line',
+              data: ySeriesData,
+              smooth: true,
+              ...(commonSeriesProps as Omit<LineSeriesOption, 'type' | 'data'>),
+              markLine: showAverageLine
+                ? {
+                    symbol: 'none',
+                    label: {
+                      show: true,
+                      formatter: () =>
+                        `Promedio: ${showAsPercentage ? `${averageValueForAxis.toFixed(2)}%` : averageValueForAxis.toFixed(2)}`,
+                      color: '#222',
+                    },
+                    lineStyle: { type: 'dashed', color: '#d62728', width: 2 },
+                    data: [{ yAxis: averageValueForAxis }],
+                  }
+                : undefined,
+            } as LineSeriesOption);
 
-    const option: echarts.EChartsOption =
-      chartType === 'treemap'
-        ? {
-            title: { text: baseTitle, left: 'center' },
-            tooltip: {
-              formatter: (p: any) =>
-                `${p.name}: ${
-                  showAsPercentage ? `${Number(p.value).toFixed(2)}%` : Number(p.value).toLocaleString()
-                }`,
-            },
-            series: [
-              {
-                type: 'treemap',
-                roam: false,
-                breadcrumb: { show: false },
-                data: data.map((d, idx) => ({
-                  name: d.año.toString(),
-                  value: ySeriesData[idx],
-                  itemStyle: {
-                    color: useGradientColor ? getColorGradient(d.valor) : '#5470C6',
-                  },
-                })),
-                label: {
-                  show: true,
-                  formatter: (info: any) =>
-                    `${info.name}\n${
-                      showAsPercentage ? `${Number(info.value).toFixed(2)}%` : Number(info.value).toLocaleString()
-                    }`,
-                },
-              },
-            ],
-          }
-        : {
-            title: { text: baseTitle, left: 'center' },
-            tooltip: {
-              trigger: 'axis',
-              valueFormatter: (val: any) =>
-                showAsPercentage ? `${Number(val).toFixed(2)}%` : Number(val).toLocaleString(),
-            },
-            xAxis: { type: 'category', data: xAxisData },
-            yAxis: {
-              type: 'value',
-              name: showAsPercentage ? '%' : 'Número de policías',
-            },
-            series: [
-              {
-                type: chartType,
-                data: ySeriesData,
-                smooth: chartType === 'line',
-                itemStyle: {
-                  color: (params: any) => {
-                    const v = data[params.dataIndex].valor;
-                    return useGradientColor ? getColorGradient(v) : '#5470C6';
-                  },
-                },
-                label: {
-                  show: true,
-                  position: 'top',
-                  fontSize: 10,
-                  color: '#333',
-                  formatter: (val: any) =>
-                    showAsPercentage ? `${Number(val.value).toFixed(2)}%` : Number(val.value).toLocaleString(),
-                },
-                markLine, // puede ser undefined y ECharts lo ignora
-              },
-            ],
-            grid: { top: 60, right: 20, left: 50, bottom: 40 },
-          };
+      option = {
+        title: { text: baseTitle, left: 'center' },
+        tooltip: {
+          trigger: 'axis',
+          valueFormatter: (val: any) =>
+            showAsPercentage ? `${Number(val).toFixed(2)}%` : Number(val).toLocaleString(),
+        },
+        xAxis: { type: 'category', data: xAxisData },
+        yAxis: { type: 'value', name: showAsPercentage ? '%' : 'Número de policías' },
+        grid: { top: 60, right: 20, left: 50, bottom: 40 },
+        series: [series],
+      };
+    }
 
-    chart.clear(); // asegura que no queden restos al cambiar tipo
+    chart.clear();
     chart.setOption(option);
 
-    // Resize
     const handleResize = () => chart.resize();
     window.addEventListener('resize', handleResize);
 
@@ -272,11 +338,14 @@ const PolicemenByYearChart: React.FC = () => {
 
   // 🔹 Descargar imagen/PDF
   const handleDownload = async (type: 'png' | 'pdf') => {
-    if (!chartRef.current) return;
-    const canvas = await html2canvas(chartRef.current);
+    const dom = chartInstanceRef.current?.getDom?.() ?? chartRef.current;
+    if (!dom) return;
+
+    const canvas = await html2canvas(dom as HTMLElement);
     const img = canvas.toDataURL('image/png');
     const est = selectedEstado !== TODOS_ESTADOS ? selectedEstado : 'todos';
     const mun = selectedMunicipio !== TODOS_MUNICIPIOS ? selectedMunicipio : 'todos';
+
     if (type === 'png') {
       const link = document.createElement('a');
       link.href = img;
@@ -316,7 +385,7 @@ const PolicemenByYearChart: React.FC = () => {
     return Array.from(setMun).sort();
   }, [allRecords, selectedEstado]);
 
-  // Limpieza al desmontar (dispose de ECharts)
+  // Limpieza al desmontar
   useEffect(() => {
     return () => {
       if (chartInstanceRef.current) {
@@ -369,8 +438,7 @@ const PolicemenByYearChart: React.FC = () => {
         </select>
 
         <div style={{ marginLeft: 'auto', fontWeight: 'bold' }}>
-          Total: {total.toLocaleString()}{' '}
-          {showAsPercentage ? '' : `· Promedio: ${promedioAbs.toFixed(2)}`}
+          Total: {total.toLocaleString()} {showAsPercentage ? '' : `· Promedio: ${promedioAbs.toFixed(2)}`}
         </div>
       </div>
 
@@ -405,7 +473,11 @@ const PolicemenByYearChart: React.FC = () => {
 
         <button
           onClick={() => setShowAverageLine((v) => !v)}
-          style={{ ...buttonStyle, opacity: chartType === 'treemap' ? 0.5 : 1, cursor: chartType === 'treemap' ? 'not-allowed' : 'pointer' }}
+          style={{
+            ...buttonStyle,
+            opacity: chartType === 'treemap' ? 0.5 : 1,
+            cursor: chartType === 'treemap' ? 'not-allowed' : 'pointer',
+          }}
           title={chartType === 'treemap' ? 'No disponible en treemap' : 'Mostrar/Ocultar promedio'}
           disabled={chartType === 'treemap'}
         >
@@ -416,33 +488,6 @@ const PolicemenByYearChart: React.FC = () => {
       <div ref={chartRef} style={{ width: '100%', height: '500px', minHeight: '300px' }} />
     </div>
   );
-};
-
-// Estilos
-const wrapperStyle: React.CSSProperties = {
-  padding: '1rem',
-  border: '1px solid #ccc',
-  borderRadius: '8px',
-  background: '#fff',
-  boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-};
-
-const toolbarStyle: React.CSSProperties = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'flex-end',
-  gap: '8px',
-  marginBottom: '10px',
-  alignItems: 'center',
-};
-
-const buttonStyle: React.CSSProperties = {
-  border: '1px solid #ddd',
-  borderRadius: 6,
-  cursor: 'pointer',
-  fontSize: '14px',
-  padding: '6px 8px',
-  background: 'none',
 };
 
 export default PolicemenByYearChart;
