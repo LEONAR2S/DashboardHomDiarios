@@ -6,7 +6,8 @@
       "properties": {
         "ID": 33,
         "Entidad Federativa:": "",
-        "Homicidios Totales": 15679
+        "Homicidios Totales": 16629,
+        "Tasa de Homicidios (x100k hab.)": 13.2
       },
       "geometry": {
         "type": "Polygon",
@@ -57,7 +58,8 @@
       "properties": {
         "ID": 2,
         "Entidad Federativa:": "Baja California",
-        "Homicidios Totales": 1060
+        "Homicidios Totales": 1120,
+        "Tasa de Homicidios (x100k hab.)": 29.72
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -954,7 +956,8 @@
       "properties": {
         "ID": 3,
         "Entidad Federativa:": "Baja California Sur",
-        "Homicidios Totales": 81
+        "Homicidios Totales": 82,
+        "Tasa de Homicidios (x100k hab.)": 10.27
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -2191,7 +2194,8 @@
       "properties": {
         "ID": 8,
         "Entidad Federativa:": "Coahuila",
-        "Homicidios Totales": 55
+        "Homicidios Totales": 58,
+        "Tasa de Homicidios (x100k hab.)": 1.84
       },
       "geometry": {
         "type": "Polygon",
@@ -2918,7 +2922,8 @@
       "properties": {
         "ID": 6,
         "Entidad Federativa:": "Chihuahua",
-        "Homicidios Totales": 1056
+        "Homicidios Totales": 1120,
+        "Tasa de Homicidios (x100k hab.)": 29.93
       },
       "geometry": {
         "type": "Polygon",
@@ -3589,7 +3594,8 @@
       "properties": {
         "ID": 10,
         "Entidad Federativa:": "Durango",
-        "Homicidios Totales": 3
+        "Homicidios Totales": 3,
+        "Tasa de Homicidios (x100k hab.)": 0.16
       },
       "geometry": {
         "type": "Polygon",
@@ -4244,7 +4250,8 @@
       "properties": {
         "ID": 25,
         "Entidad Federativa:": "Sinaloa",
-        "Homicidios Totales": 1224
+        "Homicidios Totales": 1293,
+        "Tasa de Homicidios (x100k hab.)": 42.72
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -5005,7 +5012,8 @@
       "properties": {
         "ID": 26,
         "Entidad Federativa:": "Sonora",
-        "Homicidios Totales": 775
+        "Homicidios Totales": 814,
+        "Tasa de Homicidios (x100k hab.)": 27.64
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -5874,7 +5882,8 @@
       "properties": {
         "ID": 32,
         "Entidad Federativa:": "Zacatecas",
-        "Homicidios Totales": 121
+        "Homicidios Totales": 124,
+        "Tasa de Homicidios (x100k hab.)": 7.64
       },
       "geometry": {
         "type": "Polygon",
@@ -6749,7 +6758,8 @@
       "properties": {
         "ID": 19,
         "Entidad Federativa:": "Nuevo León",
-        "Homicidios Totales": 589
+        "Homicidios Totales": 621,
+        "Tasa de Homicidios (x100k hab.)": 10.74
       },
       "geometry": {
         "type": "Polygon",
@@ -7396,7 +7406,8 @@
       "properties": {
         "ID": 24,
         "Entidad Federativa:": "San Luis Potosí",
-        "Homicidios Totales": 160
+        "Homicidios Totales": 163,
+        "Tasa de Homicidios (x100k hab.)": 5.78
       },
       "geometry": {
         "type": "Polygon",
@@ -8007,7 +8018,8 @@
       "properties": {
         "ID": 28,
         "Entidad Federativa:": "Tamaulipas",
-        "Homicidios Totales": 163
+        "Homicidios Totales": 178,
+        "Tasa de Homicidios (x100k hab.)": 5.05
       },
       "geometry": {
         "type": "Polygon",
@@ -8762,7 +8774,8 @@
       "properties": {
         "ID": 1,
         "Entidad Federativa:": "Aguascalientes",
-        "Homicidios Totales": 44
+        "Homicidios Totales": 46,
+        "Tasa de Homicidios (x100k hab.)": 3.23
       },
       "geometry": {
         "type": "Polygon",
@@ -8913,7 +8926,8 @@
       "properties": {
         "ID": 9,
         "Entidad Federativa:": "Colima",
-        "Homicidios Totales": 355
+        "Homicidios Totales": 371,
+        "Tasa de Homicidios (x100k hab.)": 50.73
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -9135,7 +9149,8 @@
         "adm1_code": "MEX-2719",
         "ID": 14,
         "Entidad Federativa:": "Jalisco",
-        "Homicidios Totales": 744
+        "Homicidios Totales": 785,
+        "Tasa de Homicidios (x100k hab.)": 9.4
       },
       "geometry": {
         "type": "Polygon",
@@ -10146,7 +10161,8 @@
       "properties": {
         "ID": 16,
         "Entidad Federativa:": "Michoacán",
-        "Homicidios Totales": 984
+        "Homicidios Totales": 1060,
+        "Tasa de Homicidios (x100k hab.)": 22.32
       },
       "geometry": {
         "type": "Polygon",
@@ -10785,7 +10801,8 @@
       "properties": {
         "ID": 18,
         "Entidad Federativa:": "Nayarit",
-        "Homicidios Totales": 120
+        "Homicidios Totales": 131,
+        "Tasa de Homicidios (x100k hab.)": 10.6
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -11198,7 +11215,8 @@
       "properties": {
         "ID": 4,
         "Entidad Federativa:": "Campeche",
-        "Homicidios Totales": 68
+        "Homicidios Totales": 72,
+        "Tasa de Homicidios (x100k hab.)": 7.76
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -11728,7 +11746,8 @@
         "adm1_code": "MEX-2723",
         "ID": 20,
         "Entidad Federativa:": "Oaxaca",
-        "Homicidios Totales": 478
+        "Homicidios Totales": 508,
+        "Tasa de Homicidios (x100k hab.)": 12.29
       },
       "geometry": {
         "type": "Polygon",
@@ -12499,7 +12518,8 @@
       "properties": {
         "ID": 21,
         "Entidad Federativa:": "Puebla",
-        "Homicidios Totales": 562
+        "Homicidios Totales": 604,
+        "Tasa de Homicidios (x100k hab.)": 9.17
       },
       "geometry": {
         "type": "Polygon",
@@ -13202,7 +13222,8 @@
       "properties": {
         "ID": 27,
         "Entidad Federativa:": "Tabasco",
-        "Homicidios Totales": 571
+        "Homicidios Totales": 594,
+        "Tasa de Homicidios (x100k hab.)": 24.72
       },
       "geometry": {
         "type": "Polygon",
@@ -13649,7 +13670,8 @@
       "properties": {
         "ID": 29,
         "Entidad Federativa:": "Tlaxcala",
-        "Homicidios Totales": 88
+        "Homicidios Totales": 98,
+        "Tasa de Homicidios (x100k hab.)": 7.3
       },
       "geometry": {
         "type": "Polygon",
@@ -13840,7 +13862,8 @@
       "properties": {
         "ID": 7,
         "Entidad Federativa:": "Ciudad de México",
-        "Homicidios Totales": 556
+        "Homicidios Totales": 598,
+        "Tasa de Homicidios (x100k hab.)": 6.49
       },
       "geometry": {
         "type": "Polygon",
@@ -13935,7 +13958,8 @@
       "properties": {
         "ID": 11,
         "Entidad Federativa:": "Guanajuato",
-        "Homicidios Totales": 1782
+        "Homicidios Totales": 1875,
+        "Tasa de Homicidios (x100k hab.)": 30.4
       },
       "geometry": {
         "type": "Polygon",
@@ -14382,7 +14406,8 @@
       "properties": {
         "ID": 12,
         "Entidad Federativa:": "Guerrero",
-        "Homicidios Totales": 755
+        "Homicidios Totales": 796,
+        "Tasa de Homicidios (x100k hab.)": 22.48
       },
       "geometry": {
         "type": "Polygon",
@@ -14957,7 +14982,8 @@
       "properties": {
         "ID": 13,
         "Entidad Federativa:": "Hidalgo",
-        "Homicidios Totales": 167
+        "Homicidios Totales": 173,
+        "Tasa de Homicidios (x100k hab.)": 5.61
       },
       "geometry": {
         "type": "Polygon",
@@ -15404,7 +15430,8 @@
       "properties": {
         "ID": 15,
         "Entidad Federativa:": "Estado de México",
-        "Homicidios Totales": 1171
+        "Homicidios Totales": 1244,
+        "Tasa de Homicidios (x100k hab.)": 7.32
       },
       "geometry": {
         "type": "Polygon",
@@ -15807,7 +15834,8 @@
       "properties": {
         "ID": 17,
         "Entidad Federativa:": "Morelos",
-        "Homicidios Totales": 721
+        "Homicidios Totales": 779,
+        "Tasa de Homicidios (x100k hab.)": 39.51
       },
       "geometry": {
         "type": "Polygon",
@@ -16010,7 +16038,8 @@
       "properties": {
         "ID": 22,
         "Entidad Federativa:": "Querétaro",
-        "Homicidios Totales": 48
+        "Homicidios Totales": 54,
+        "Tasa de Homicidios (x100k hab.)": 2.28
       },
       "geometry": {
         "type": "Polygon",
@@ -16309,7 +16338,8 @@
       "properties": {
         "ID": 30,
         "Entidad Federativa:": "Veracruz",
-        "Homicidios Totales": 627
+        "Homicidios Totales": 691,
+        "Tasa de Homicidios (x100k hab.)": 8.57
       },
       "geometry": {
         "type": "Polygon",
@@ -17372,7 +17402,8 @@
       "properties": {
         "ID": 5,
         "Entidad Federativa:": "Chiapas",
-        "Homicidios Totales": 291
+        "Homicidios Totales": 304,
+        "Tasa de Homicidios (x100k hab.)": 5.48
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -17861,7 +17892,8 @@
       "properties": {
         "ID": 23,
         "Entidad Federativa:": "Quintana Roo",
-        "Homicidios Totales": 240
+        "Homicidios Totales": 250,
+        "Tasa de Homicidios (x100k hab.)": 13.46
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -18538,7 +18570,8 @@
       "properties": {
         "ID": 31,
         "Entidad Federativa:": "Yucatán",
-        "Homicidios Totales": 20
+        "Homicidios Totales": 20,
+        "Tasa de Homicidios (x100k hab.)": 0.86
       },
       "geometry": {
         "type": "Polygon",

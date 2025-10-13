@@ -181,13 +181,16 @@ const PolicemenByFechaChart: React.FC = () => {
 
       const minVal = Math.min(...dataByEstado.map((d) => d.valor));
       const maxVal = Math.max(...dataByEstado.map((d) => d.valor));
-      const getColorGradient = (v: number) => {
-        const ratio = (v - minVal) / ((maxVal - minVal) || 1);
-        const r = Math.round(255 * ratio);
-        const g = Math.round(200 * (1 - ratio));
-        const b = 100;
-        return `rgb(${r},${g},${b})`;
-      };
+const getColorGradient = (v: number) => {
+  if (isNaN(v)) return '#ccc'; // fallback seguro
+  if (maxVal === minVal) return 'rgb(100,150,200)'; // si todos los valores son iguales
+
+  const ratio = Math.min(Math.max((v - minVal) / (maxVal - minVal), 0), 1);
+  const r = Math.round(255 * ratio);
+  const g = Math.round(200 * (1 - ratio));
+  const b = 100;
+  return `rgb(${r},${g},${b})`;
+};
 
       const option: echarts.EChartsOption = {
         title: { text: `Estados con eventos el ${selectedDate}`, left: 'center' },
