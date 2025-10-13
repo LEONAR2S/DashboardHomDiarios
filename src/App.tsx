@@ -19,6 +19,7 @@ import PolicemenByYearTrimChart from './components/PolicemenByYearTrimChart';
 import PolicemenBySemanaChart from './components/PolicemenBySemanaChart';
 import PolicemenByFechaChart from './components/PolicemenByFechaChart';
 import ConsultaEventos from './components/ConsultaEventos';
+import PoliceMapPoints from './components/PoliceMapPoints';
 
 
 
@@ -316,6 +317,16 @@ const App: React.FC = () => {
     Esta visualización muestra los asesinatos diarios de policías, permitiendo filtrar por año, estado y municipio.
   </p>
   <PolicemenByFechaChart />
+</section>
+<section className="w-full py-8 px-2 sm:px-4 md:px-6 border-t border-gray-300/20">
+  <h2 className="text-2xl font-semibold text-indigo-700 mb-4 text-center">
+    🗺️ Mapa de Homicidios de Policías (Georreferenciado)
+  </h2>
+  <p className="text-gray-600 text-center max-w-2xl mx-auto mb-6">
+    Cada punto rojo representa un homicidio de un elemento policial en México entre 2018 y 2024.
+    Puedes hacer zoom y mover el mapa para explorar los casos.
+  </p>
+  <PoliceMapPoints />
 </section>
 
 

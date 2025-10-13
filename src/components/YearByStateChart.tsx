@@ -24,33 +24,60 @@ interface YearCount {
   valor: number;
 }
 
-const TODOS_ESTADOS = "__TODOS__";
-const TODOS_MUNICIPIOS = "__TODOS__";
+const TODOS_ESTADOS = '__TODOS__';
+const TODOS_MUNICIPIOS = '__TODOS__';
 
 const PolicemenByYearChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstanceRef = useRef<echarts.EChartsType | null>(null);
 
+  // Estado UI / Datos
   const [allRecords, setAllRecords] = useState<RecordFull[]>([]);
   const [selectedEstado, setSelectedEstado] = useState<string>(TODOS_ESTADOS);
   const [selectedMunicipio, setSelectedMunicipio] = useState<string>(TODOS_MUNICIPIOS);
   const [data, setData] = useState<YearCount[]>([]);
-  const [chartType, setChartType] = useState<'bar' | 'treemap' | 'line'>('line'); // ✅ Línea por defecto
+  const [chartType, setChartType] = useState<'bar' | 'treemap' | 'line'>('line');
   const [useGradientColor, setUseGradientColor] = useState<boolean>(true);
   const [showAsPercentage, setShowAsPercentage] = useState(false);
 
+  // 🔥 NUEVO: Toggle para Promedio
+  const [showAverageLine, setShowAverageLine] = useState<boolean>(false);
+
+  // Carga
+  const [loading, setLoading] = useState<boolean>(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  // Totales y promedio
   const total = useMemo(() => data.reduce((s, d) => s + d.valor, 0), [data]);
+  const promedioAbs = useMemo(() => (data.length ? total / data.length : 0), [total, data.length]);
+  const promedioPct = useMemo(() => (total > 0 ? (promedioAbs / total) * 100 : 0), [promedioAbs, total]);
 
   // 🔹 Cargar datos
   useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    setLoadError(null);
+
     fetch('/data/DataPolice20182024.json')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then((json: RecordFull[]) => {
+        if (!mounted) return;
         setAllRecords(json);
+        setLoading(false);
       })
       .catch((err) => {
         console.error('Error cargando datos:', err);
+        if (!mounted) return;
+        setLoadError('No se pudieron cargar los datos.');
+        setLoading(false);
       });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // 🔹 Agrupar por año
@@ -61,7 +88,7 @@ const PolicemenByYearChart: React.FC = () => {
       map[r.Año] = (map[r.Año] || 0) + 1;
     }
     return Object.entries(map)
-      .map(([año, valor]) => ({ año: parseInt(año), valor }))
+      .map(([año, valor]) => ({ año: parseInt(año, 10), valor }))
       .sort((a, b) => a.año - b.año);
   };
 
@@ -74,33 +101,38 @@ const PolicemenByYearChart: React.FC = () => {
     if (selectedMunicipio !== TODOS_MUNICIPIOS) {
       filtered = filtered.filter((r) => r.Municipio === selectedMunicipio);
     }
-    const grouped = agruparPorAño(filtered);
-    setData(grouped);
+    setData(agruparPorAño(filtered));
   }, [allRecords, selectedEstado, selectedMunicipio]);
 
   // 🔹 Si se selecciona municipio, actualizar estado automáticamente
   useEffect(() => {
-    if (
-      selectedMunicipio !== TODOS_MUNICIPIOS &&
-      selectedEstado === TODOS_ESTADOS
-    ) {
+    if (selectedMunicipio !== TODOS_MUNICIPIOS && selectedEstado === TODOS_ESTADOS) {
       const match = allRecords.find((r) => r.Municipio === selectedMunicipio);
-      if (match) {
-        setSelectedEstado(match.Estado);
-      }
+      if (match) setSelectedEstado(match.Estado);
     }
   }, [selectedMunicipio, selectedEstado, allRecords]);
 
-  // 🔹 Renderizar gráfico
+  // 🔹 Renderizar/Actualizar gráfico
   useEffect(() => {
-    if (!chartRef.current || data.length === 0) {
-      chartInstanceRef.current?.clear();
+    const el = chartRef.current;
+    if (!el) return;
+
+    // Crear instancia si no existe
+    if (!chartInstanceRef.current) {
+      chartInstanceRef.current = echarts.init(el);
+    }
+    const chart = chartInstanceRef.current;
+
+    // Si no hay data
+    if (!data.length) {
+      chart.clear();
+      chart.setOption({
+        title: { text: 'Sin datos', left: 'center', top: 'middle' },
+      } as echarts.EChartsOption);
       return;
     }
 
-    const chart = chartInstanceRef.current ?? echarts.init(chartRef.current);
-    chartInstanceRef.current = chart;
-
+    // Helpers de color
     const minVal = Math.min(...data.map((d) => d.valor));
     const maxVal = Math.max(...data.map((d) => d.valor));
     const getColorGradient = (v: number): string => {
@@ -113,9 +145,7 @@ const PolicemenByYearChart: React.FC = () => {
 
     const xAxisData = data.map((d) => d.año.toString());
     const ySeriesData = data.map((d) =>
-      showAsPercentage
-        ? parseFloat(((d.valor * 100) / (total || 1)).toFixed(2))
-        : d.valor
+      showAsPercentage ? parseFloat(((d.valor / (total || 1)) * 100).toFixed(2)) : d.valor
     );
 
     const baseTitle =
@@ -127,30 +157,54 @@ const PolicemenByYearChart: React.FC = () => {
         ? `Policías asesinados en estado ${selectedEstado}`
         : `Policías asesinados en ${selectedMunicipio}, ${selectedEstado}`;
 
+    // markLine para promedio (solo en bar/line)
+    const averageValueForAxis = showAsPercentage ? parseFloat(promedioPct.toFixed(2)) : parseFloat(promedioAbs.toFixed(2));
+    const markLine =
+      showAverageLine && chartType !== 'treemap'
+        ? {
+            symbol: 'none',
+            label: {
+              show: true,
+              formatter: () =>
+                `Promedio: ${showAsPercentage ? `${averageValueForAxis.toFixed(2)}%` : averageValueForAxis.toFixed(2)}`,
+              color: '#222',
+            },
+            lineStyle: {
+              type: 'dashed',
+              color: '#d62728',
+              width: 2,
+            },
+            data: [{ yAxis: averageValueForAxis }],
+          }
+        : undefined;
+
     const option: echarts.EChartsOption =
       chartType === 'treemap'
         ? {
             title: { text: baseTitle, left: 'center' },
-            tooltip: { formatter: (p: any) => `${p.name}: ${p.value}` },
+            tooltip: {
+              formatter: (p: any) =>
+                `${p.name}: ${
+                  showAsPercentage ? `${Number(p.value).toFixed(2)}%` : Number(p.value).toLocaleString()
+                }`,
+            },
             series: [
               {
                 type: 'treemap',
-                data: data.map((d) => ({
+                roam: false,
+                breadcrumb: { show: false },
+                data: data.map((d, idx) => ({
                   name: d.año.toString(),
-                  value: ySeriesData[data.findIndex((x) => x.año === d.año)],
+                  value: ySeriesData[idx],
                   itemStyle: {
-                    color: useGradientColor
-                      ? getColorGradient(d.valor)
-                      : '#5470C6',
+                    color: useGradientColor ? getColorGradient(d.valor) : '#5470C6',
                   },
                 })),
                 label: {
                   show: true,
                   formatter: (info: any) =>
                     `${info.name}\n${
-                      showAsPercentage
-                        ? `${info.value.toFixed(2)}%`
-                        : info.value.toLocaleString()
+                      showAsPercentage ? `${Number(info.value).toFixed(2)}%` : Number(info.value).toLocaleString()
                     }`,
                 },
               },
@@ -160,8 +214,8 @@ const PolicemenByYearChart: React.FC = () => {
             title: { text: baseTitle, left: 'center' },
             tooltip: {
               trigger: 'axis',
-              formatter: (params: any) =>
-                `${params[0].name}: ${params[0].value}`,
+              valueFormatter: (val: any) =>
+                showAsPercentage ? `${Number(val).toFixed(2)}%` : Number(val).toLocaleString(),
             },
             xAxis: { type: 'category', data: xAxisData },
             yAxis: {
@@ -185,19 +239,21 @@ const PolicemenByYearChart: React.FC = () => {
                   fontSize: 10,
                   color: '#333',
                   formatter: (val: any) =>
-                    showAsPercentage
-                      ? `${val.value.toFixed(2)}%`
-                      : val.value.toLocaleString(),
+                    showAsPercentage ? `${Number(val.value).toFixed(2)}%` : Number(val.value).toLocaleString(),
                 },
+                markLine, // puede ser undefined y ECharts lo ignora
               },
             ],
+            grid: { top: 60, right: 20, left: 50, bottom: 40 },
           };
 
+    chart.clear(); // asegura que no queden restos al cambiar tipo
     chart.setOption(option);
 
-    // ✅ CORREGIDO: Resize handler
+    // Resize
     const handleResize = () => chart.resize();
     window.addEventListener('resize', handleResize);
+
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -208,10 +264,13 @@ const PolicemenByYearChart: React.FC = () => {
     chartType,
     useGradientColor,
     showAsPercentage,
+    showAverageLine,
     total,
+    promedioAbs,
+    promedioPct,
   ]);
 
-  // 🔹 Descargar imagen
+  // 🔹 Descargar imagen/PDF
   const handleDownload = async (type: 'png' | 'pdf') => {
     if (!chartRef.current) return;
     const canvas = await html2canvas(chartRef.current);
@@ -232,14 +291,17 @@ const PolicemenByYearChart: React.FC = () => {
     }
   };
 
+  // 🔹 Reset
   const handleReset = () => {
     setSelectedEstado(TODOS_ESTADOS);
     setSelectedMunicipio(TODOS_MUNICIPIOS);
     setChartType('line');
     setUseGradientColor(true);
     setShowAsPercentage(false);
+    setShowAverageLine(false);
   };
 
+  // Opciones selects
   const estadosOptions = useMemo(() => {
     const setEst = new Set(allRecords.map((r) => r.Estado));
     return Array.from(setEst).sort();
@@ -254,10 +316,32 @@ const PolicemenByYearChart: React.FC = () => {
     return Array.from(setMun).sort();
   }, [allRecords, selectedEstado]);
 
+  // Limpieza al desmontar (dispose de ECharts)
+  useEffect(() => {
+    return () => {
+      if (chartInstanceRef.current) {
+        chartInstanceRef.current.dispose();
+        chartInstanceRef.current = null;
+      }
+    };
+  }, []);
+
   return (
     <div style={wrapperStyle}>
+      {/* Estado de carga / error */}
+      {loading && <div style={{ marginBottom: 8 }}>Cargando datos…</div>}
+      {loadError && <div style={{ color: 'crimson', marginBottom: 8 }}>{loadError}</div>}
+
       {/* Filtros */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '10px', alignItems: 'center' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '10px',
+          marginBottom: '10px',
+          alignItems: 'center',
+        }}
+      >
         <label>Estado:</label>
         <select
           value={selectedEstado}
@@ -268,23 +352,25 @@ const PolicemenByYearChart: React.FC = () => {
         >
           <option value={TODOS_ESTADOS}>Todos</option>
           {estadosOptions.map((st) => (
-            <option key={st} value={st}>{st}</option>
+            <option key={st} value={st}>
+              {st}
+            </option>
           ))}
         </select>
 
         <label>Municipio:</label>
-        <select
-          value={selectedMunicipio}
-          onChange={(e) => setSelectedMunicipio(e.target.value)}
-        >
+        <select value={selectedMunicipio} onChange={(e) => setSelectedMunicipio(e.target.value)}>
           <option value={TODOS_MUNICIPIOS}>Todos</option>
           {municipiosOptions.map((mun) => (
-            <option key={mun} value={mun}>{mun}</option>
+            <option key={mun} value={mun}>
+              {mun}
+            </option>
           ))}
         </select>
 
         <div style={{ marginLeft: 'auto', fontWeight: 'bold' }}>
-          Total: {total.toLocaleString()}
+          Total: {total.toLocaleString()}{' '}
+          {showAsPercentage ? '' : `· Promedio: ${promedioAbs.toFixed(2)}`}
         </div>
       </div>
 
@@ -308,11 +394,22 @@ const PolicemenByYearChart: React.FC = () => {
         <button onClick={handleReset} style={buttonStyle} title="Resetear">
           <FaUndo />
         </button>
-        <button onClick={() => setUseGradientColor(!useGradientColor)} style={buttonStyle}>
+
+        <button onClick={() => setUseGradientColor((v) => !v)} style={buttonStyle} title="Color por gradiente">
           {useGradientColor ? 'Gradiente ✔' : 'Gradiente ✘'}
         </button>
-        <button onClick={() => setShowAsPercentage(!showAsPercentage)} style={buttonStyle}>
-          {showAsPercentage ? '%' : '#'}
+
+        <button onClick={() => setShowAsPercentage((v) => !v)} style={buttonStyle} title="Mostrar como porcentaje del total">
+          {showAsPercentage ? '% ✔' : '#'}
+        </button>
+
+        <button
+          onClick={() => setShowAverageLine((v) => !v)}
+          style={{ ...buttonStyle, opacity: chartType === 'treemap' ? 0.5 : 1, cursor: chartType === 'treemap' ? 'not-allowed' : 'pointer' }}
+          title={chartType === 'treemap' ? 'No disponible en treemap' : 'Mostrar/Ocultar promedio'}
+          disabled={chartType === 'treemap'}
+        >
+          {showAverageLine ? 'Promedio ✔' : 'Promedio ✘'}
         </button>
       </div>
 
@@ -329,6 +426,7 @@ const wrapperStyle: React.CSSProperties = {
   background: '#fff',
   boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
 };
+
 const toolbarStyle: React.CSSProperties = {
   display: 'flex',
   flexWrap: 'wrap',
@@ -337,6 +435,7 @@ const toolbarStyle: React.CSSProperties = {
   marginBottom: '10px',
   alignItems: 'center',
 };
+
 const buttonStyle: React.CSSProperties = {
   border: '1px solid #ddd',
   borderRadius: 6,
