@@ -49,37 +49,41 @@ const App: React.FC = () => {
           <p className="text-base sm:text-lg text-gray-600 mb-8">
             Selecciona una categoría para visualizar los datos estadísticos:
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4 w-full">
+
+          {/* Botones centrados y contenidos */}
+          <div className="flex flex-wrap justify-center gap-4 w-full">
             <button
               onClick={() => setSelectedOption('homicidios')}
-              className="flex-1 px-5 py-3 bg-blue-600 text-white text-base sm:text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 active:scale-95 transition-all duration-200"
+              className="w-full sm:w-[calc(50%-0.5rem)] px-5 py-3 bg-blue-600 text-white text-base sm:text-lg font-medium rounded-lg shadow-md hover:bg-blue-700 active:scale-95 transition-all duration-200"
             >
               Homicidios Diarios
             </button>
             <button
               onClick={() => setSelectedOption('aseguramientos')}
-              className="flex-1 px-5 py-3 bg-emerald-600 text-white text-base sm:text-lg font-medium rounded-lg shadow-md hover:bg-emerald-700 active:scale-95 transition-all duration-200"
+              className="w-full sm:w-[calc(50%-0.5rem)] px-5 py-3 bg-emerald-600 text-white text-base sm:text-lg font-medium rounded-lg shadow-md hover:bg-emerald-700 active:scale-95 transition-all duration-200"
             >
               Aseguramientos INEGI
             </button>
             <button
               onClick={() => setSelectedOption('policiales')}
-              className="flex-1 px-5 py-3 bg-indigo-700 text-white text-base sm:text-lg font-medium rounded-lg shadow-md hover:bg-indigo-800 active:scale-95 transition-all duration-200"
+              className="w-full sm:w-[calc(50%-0.5rem)] px-5 py-3 bg-indigo-700 text-white text-base sm:text-lg font-medium rounded-lg shadow-md hover:bg-indigo-800 active:scale-95 transition-all duration-200"
             >
               Policías Asesinados
             </button>
             <button
               onClick={() => setSelectedOption('feminicidios')}
-              className="flex-1 px-5 py-3 bg-rose-600 text-white text-base sm:text-lg font-medium rounded-lg shadow-md hover:bg-rose-700 active:scale-95 transition-all duration-200"
+              className="w-full sm:w-[calc(50%-0.5rem)] px-5 py-3 bg-rose-600 text-white text-base sm:text-lg font-medium rounded-lg shadow-md hover:bg-rose-700 active:scale-95 transition-all duration-200"
             >
               Feminicidios Municipales
             </button>
           </div>
+
           <p className="text-xs sm:text-sm text-gray-400 mt-8">
             © 2025 Inspeccion360 — Datos públicos oficiales
           </p>
         </div>
       </div>
+
     );
   }
 
