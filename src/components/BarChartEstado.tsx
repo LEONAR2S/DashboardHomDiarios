@@ -1,7 +1,7 @@
-import * as echarts from 'echarts';
-import { useEffect, useRef, useState, useMemo } from 'react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import * as echarts from "echarts";
+import { useEffect, useRef, useState, useMemo } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import {
   FaDownload,
   FaFilePdf,
@@ -9,161 +9,166 @@ import {
   FaSortAmountDown,
   FaChartBar,
   FaSitemap,
-} from 'react-icons/fa';
+} from "react-icons/fa";
 
-interface Datos {
-  entidad: string;
-  valor: number;
-  tasa: number;
+interface RegistroFeminicidio {
+  Año: number;
+  Clave_Ent: number;
+  Entidad: string;
+  "Cve._Municipio": number;
+  Municipio: string;
+  "Bien_jurídico_afectado": string;
+  Tipo_de_delito: string;
+  Subtipo_de_delito: string;
+  Modalidad: string;
+  [key: string]: any;
 }
 
-const BarChartEstado = () => {
+interface DatosEstado {
+  entidad: string;
+  total: number;
+}
+
+const BarChartFeminicidiosEstado = () => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstanceRef = useRef<echarts.EChartsType | null>(null);
 
-  const [data, setData] = useState<Datos[]>([]);
-  const [sortedData, setSortedData] = useState<Datos[]>([]);
-  const [chartType, setChartType] = useState<'bar' | 'treemap'>('bar');
+  const [data, setData] = useState<DatosEstado[]>([]);
+  const [sortedData, setSortedData] = useState<DatosEstado[]>([]);
+  const [chartType, setChartType] = useState<"bar" | "treemap">("bar");
+  const [useGradientColor, setUseGradientColor] = useState(true); // gradiente activado por defecto
   const [showAsPercentage, setShowAsPercentage] = useState(false);
   const [showAverageLine, setShowAverageLine] = useState(false);
-  const [useGradientColor, setUseGradientColor] = useState(false);
-  
-  // Nuevo estado para modo: "valor" o "tasa"
-  const [dataMode, setDataMode] = useState<'valor' | 'tasa'>('valor');
 
-  const [leyenda50, setLeyenda50] = useState<{ entidades: number; porcentaje: number } | null>(null);
-  const [leyendaTop10, setLeyendaTop10] = useState<{ total: number; porcentaje: number } | null>(null);
-
-  const total = useMemo(
-    () => data.reduce((sum, item) => sum + (item[dataMode] || 0), 0),
-    [data, dataMode]
+  const [leyenda50, setLeyenda50] = useState<{ estados: number; porcentaje: number } | null>(null);
+  const [leyendaTop10, setLeyendaTop10] = useState<{ total: number; porcentaje: number } | null>(
+    null
   );
 
-  const promedio = useMemo(
-    () => (data.length > 0 ? total / data.length : 0),
-    [total, data]
-  );
+  const total = useMemo(() => data.reduce((sum, d) => sum + d.total, 0), [data]);
+  const promedio = useMemo(() => (data.length ? total / data.length : 0), [data, total]);
+  const countAbove = useMemo(() => data.filter((d) => d.total > promedio).length, [data, promedio]);
+  const countBelow = useMemo(() => data.filter((d) => d.total < promedio).length, [data, promedio]);
 
-  const countAbove = useMemo(
-    () => data.filter((d) => d[dataMode] > promedio).length,
-    [data, promedio, dataMode]
-  );
-
-  const countBelow = useMemo(
-    () => data.filter((d) => d[dataMode] < promedio).length,
-    [data, promedio, dataMode]
-  );
-
+  // 📥 Cargar datos desde JSON
   useEffect(() => {
-    fetch('/data/Estado.json')
+    fetch("/data/feminicidios.json")
       .then((res) => res.json())
-      .then((json: Datos[]) => {
-        setData(json);
-        ordenarPorValor(json);
+      .then((json: RegistroFeminicidio[]) => {
+        const filtrados = json.filter(
+          (item) => item.Tipo_de_delito?.toLowerCase() === "feminicidio"
+        );
+
+        const meses = [
+          "Enero",
+          "Febrero",
+          "Marzo",
+          "Abril",
+          "Mayo",
+          "Junio",
+          "Julio",
+          "Agosto",
+          "Septiembre",
+          "Octubre",
+          "Noviembre",
+          "Diciembre",
+        ];
+
+        const mapa = new Map<string, number>();
+        filtrados.forEach((item) => {
+          const totalMeses = meses.reduce((sum, mes) => sum + (Number(item[mes]) || 0), 0);
+          mapa.set(item.Entidad, (mapa.get(item.Entidad) || 0) + totalMeses);
+        });
+
+        const agrupado = Array.from(mapa, ([entidad, total]) => ({ entidad, total }));
+        setData(agrupado);
+        ordenarPorValor(agrupado);
       })
-      .catch((err) => console.error('Error cargando datos:', err));
+      .catch((err) => console.error("Error cargando datos:", err));
   }, []);
 
+  // 🎨 Render del gráfico
   useEffect(() => {
     if (!chartRef.current || !sortedData.length) return;
-
     const chart = chartInstanceRef.current ?? echarts.init(chartRef.current);
     chartInstanceRef.current = chart;
 
-    const minVal = Math.min(...sortedData.map((d) => d[dataMode]));
-    const maxVal = Math.max(...sortedData.map((d) => d[dataMode]));
+    const minVal = Math.min(...sortedData.map((d) => d.total));
+    const maxVal = Math.max(...sortedData.map((d) => d.total));
 
     const getColorGradient = (value: number, min: number, max: number) => {
       const ratio = (value - min) / (max - min || 1);
       const r = Math.round(255 * ratio);
-      const g = Math.round(200 * (1 - ratio));
-      const b = 100;
+      const g = Math.round(150 * (1 - ratio));
+      const b = 180;
       return `rgb(${r},${g},${b})`;
     };
 
     const options =
-      chartType === 'bar'
+      chartType === "bar"
         ? {
-            title: { text: dataMode === 'valor' ? 'Homicidios por Entidad Federativa' : 'Tasa por cada 100 mil habitantes por Entidad' },
+            title: {
+              text: "Feminicidios por Estado — Carpetas de Investigación (2025)",
+              left: "center",
+            },
             tooltip: {
-              trigger: 'axis',
+              trigger: "axis",
               formatter: (params: any) => {
-                const { value, name } = params[0];
-                if (dataMode === 'tasa') {
-                  return `${name}<br/>${value.toFixed(2)} tasa por cada 100 mil habitantes`;
-                } else {
-                  // valor absoluto
-                  return showAsPercentage
-                    ? `${name}<br/>${value.toFixed(2)}%`
-                    : `${name}<br/>${value.toLocaleString()} homicidios`;
-                }
+                const { name, value } = params[0];
+                return showAsPercentage
+                  ? `${name}<br/>${value.toFixed(2)}%`
+                  : `${name}<br/>${value} carpetas de investigación`;
               },
             },
             dataZoom: [
-              { type: 'slider', show: false, xAxisIndex: 0, start: 0, end: 100, bottom: 0 },
-              { type: 'inside', xAxisIndex: 0, start: 0, end: 100 },
+              { type: "inside" },
+              { type: "slider", start: 0, end: 100 },
             ],
             xAxis: {
-              type: 'category',
-              data: sortedData.map((item) => item.entidad),
+              type: "category",
+              data: sortedData.map((d) => d.entidad),
               axisLabel: { rotate: 45, interval: 0 },
             },
             yAxis: {
-              type: 'value',
-              name: dataMode === 'tasa'
-                ? 'Tasa / 100k hab.'
-                : showAsPercentage
-                ? '%'
-                : 'Homicidios'
+              type: "value",
+              name: showAsPercentage ? "%" : "Carpetas de Investigación",
             },
             series: [
               {
-                type: 'bar',
+                type: "bar",
                 data: sortedData.map((item) => {
-                  const rawValue = item[dataMode];
-                  const val = showAsPercentage && dataMode === 'valor'
-                    ? parseFloat(((rawValue * 100) / total).toFixed(2))
-                    : rawValue;
-
-                  if (useGradientColor) {
-                    return {
-                      value: val,
-                      itemStyle: {
-                        color: getColorGradient(rawValue, minVal, maxVal),
-                      },
-                    };
-                  } else {
-                    return {
-                      value: val,
-                      itemStyle: {
-                        color: '#5470C6',
-                      },
-                    };
-                  }
+                  const val = showAsPercentage ? (item.total * 100) / total : item.total;
+                  return {
+                    value: val,
+                    itemStyle: {
+                      color: useGradientColor
+                        ? getColorGradient(item.total, minVal, maxVal)
+                        : "#C13584",
+                    },
+                  };
                 }),
                 label: {
                   show: true,
-                  position: 'top',
+                  position: "top",
                   fontSize: 10,
-                  color: '#333',
-                  formatter: (val: any) => {
-                    if (dataMode === 'tasa') {
-                      return `${val.value.toFixed(2)}`;
-                    } else {
-                      return showAsPercentage
-                        ? `${val.value.toFixed(2)}%`
-                        : val.value.toLocaleString();
-                    }
-                  },
+                  color: "#333",
+                  formatter: (val: any) =>
+                    showAsPercentage ? `${val.value.toFixed(2)}%` : val.value,
                 },
-                ...(showAverageLine && dataMode === 'valor' && !showAsPercentage
+                ...(showAverageLine
                   ? {
                       markLine: {
-                        symbol: 'none',
+                        symbol: "none",
                         data: [
                           {
                             yAxis: promedio,
-                            lineStyle: { type: 'dashed', color: 'red', width: 2 },
+                            lineStyle: { type: "dashed", color: "red", width: 2 },
+                            label: {
+                              show: true,
+                              formatter: `Promedio Nacional: ${promedio.toFixed(2)}`,
+                              position: "end",
+                              color: "red",
+                            },
                           },
                         ],
                       },
@@ -173,124 +178,73 @@ const BarChartEstado = () => {
             ],
           }
         : {
-            // Treemap
-            title: { text: dataMode === 'valor' ? 'Mapa de Árbol: Homicidios por Estado' : 'Mapa de Árbol: Tasa por cada 100 mil habitantes' },
-            tooltip: {
-              formatter: (params: any) => {
-                const { name, value } = params;
-                if (dataMode === 'tasa') {
-                  return `${name}<br/>${value.toFixed(2)} tasa por cada 100 mil habitantes`;
-                } else {
-                  return showAsPercentage
-                    ? `${name}<br/>${value.toFixed(2)}%`
-                    : `${name}<br/>${value.toLocaleString()} homicidios`;
-                }
-              },
+            title: {
+              text: "Mapa de Árbol — Feminicidios por Estado (2025)",
+              left: "center",
             },
+            tooltip: { formatter: (params: any) => `${params.name}<br/>${params.value} carpetas` },
             series: [
               {
-                type: 'treemap',
-                data: sortedData.map((item) => {
-                  const rawValue = item[dataMode];
-                  const val = showAsPercentage && dataMode === 'valor'
-                    ? parseFloat(((rawValue * 100) / total).toFixed(2))
-                    : rawValue;
-
-                  const color = useGradientColor
-                    ? getColorGradient(rawValue, minVal, maxVal)
-                    : '#5470C6';
-
-                  return {
-                    name: item.entidad,
-                    value: val,
-                    itemStyle: {
-                      color,
-                    },
-                  };
-                }),
+                type: "treemap",
+                roam: true,
+                nodeClick: false,
+                data: sortedData.map((d) => ({
+                  name: d.entidad,
+                  value: d.total,
+                  itemStyle: {
+                    color: useGradientColor ? getColorGradient(d.total, minVal, maxVal) : "#C13584",
+                  },
+                })),
                 label: {
                   show: true,
-                  formatter: (info: any) =>
-                    `${info.name}\n${
-                      dataMode === 'tasa'
-                        ? `${info.value.toFixed(2)}`
-                        : showAsPercentage
-                        ? `${info.value.toFixed(2)}%`
-                        : info.value.toLocaleString()
-                    }`,
+                  formatter: (info: any) => `${info.name}\n${info.value.toLocaleString()} carpetas`,
                 },
-                leafDepth: 1,
-                upperLabel: { show: false },
               },
             ],
           };
 
     chart.setOption(options);
-    const handleResize = () => chart.resize();
-    window.addEventListener('resize', handleResize);
-
+    const resizeHandler = () => chart.resize();
+    window.addEventListener("resize", resizeHandler);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", resizeHandler);
       chart.dispose();
       chartInstanceRef.current = null;
     };
-  }, [
-    sortedData,
-    chartType,
-    showAsPercentage,
-    total,
-    promedio,
-    showAverageLine,
-    useGradientColor,
-    dataMode,
-  ]);
+  }, [sortedData, chartType, useGradientColor, showAverageLine, showAsPercentage, total, promedio]);
 
-  const ordenarPorNombre = (baseData: Datos[] = data) => {
-    setLeyenda50(null);
-    setLeyendaTop10(null);
-    const ordenada = [...baseData].sort((a, b) => a.entidad.localeCompare(b.entidad));
-    setSortedData(ordenada);
+  // 🔘 Funciones auxiliares
+  const ordenarPorNombre = (base: DatosEstado[] = data) => {
+    setSortedData([...base].sort((a, b) => a.entidad.localeCompare(b.entidad)));
   };
 
-  const ordenarPorValor = (baseData: Datos[] = data) => {
-    setLeyenda50(null);
-    setLeyendaTop10(null);
-    const ordenada = [...baseData].sort((a, b) => b[dataMode] - a[dataMode]);
-    setSortedData(ordenada);
+  const ordenarPorValor = (base: DatosEstado[] = data) => {
+    setSortedData([...base].sort((a, b) => b.total - a.total));
   };
 
   const mostrarTop10 = () => {
-    setLeyenda50(null);
-    const top10 = [...data]
-      .sort((a, b) => b[dataMode] - a[dataMode])
-      .slice(0, 10);
-
-    const totalTop10 = top10.reduce((sum, item) => sum + item[dataMode], 0);
-    const porcentaje = parseFloat(((totalTop10 * 100) / (dataMode === 'valor' ? total : total)).toFixed(1));
-    // Nota: porcentaje tiene sentido solo si estás en modo 'valor' o si quieres comparar tasas relativas; ajusta según lo que desees
-
-    setLeyendaTop10({ total: totalTop10, porcentaje });
-    setSortedData(top10);
+    const top = [...data].sort((a, b) => b.total - a.total).slice(0, 10);
+    const totalTop = top.reduce((sum, d) => sum + d.total, 0);
+    const porcentaje = (totalTop * 100) / total;
+    setLeyendaTop10({ total: totalTop, porcentaje });
+    setSortedData(top);
   };
 
-  const mostrarTop50Porciento = () => {
-    setLeyendaTop10(null);
-    const sorted = [...data].sort((a, b) => b[dataMode] - a[dataMode]);
+  const mostrarTop50 = () => {
+    const sorted = [...data].sort((a, b) => b.total - a.total);
     let acumulado = 0;
-    let subset: Datos[] = [];
-
-    for (let i = 0; i < sorted.length; i++) {
-      acumulado += sorted[i][dataMode];
-      subset.push(sorted[i]);
-      if ((acumulado / total) >= 0.5) break;
+    let subset: DatosEstado[] = [];
+    for (let d of sorted) {
+      acumulado += d.total;
+      subset.push(d);
+      if (acumulado / total >= 0.5) break;
     }
-
-    const porcentaje = parseFloat(((acumulado * 100) / total).toFixed(1));
-    setLeyenda50({ entidades: subset.length, porcentaje });
+    const porcentaje = (acumulado * 100) / total;
+    setLeyenda50({ estados: subset.length, porcentaje });
     setSortedData(subset);
   };
 
-  const restablecerVistaOriginal = () => {
+  const resetVista = () => {
     setLeyenda50(null);
     setLeyendaTop10(null);
     setShowAverageLine(false);
@@ -300,11 +254,11 @@ const BarChartEstado = () => {
   const handleDownloadImage = () => {
     if (!chartRef.current) return;
     const chart = echarts.getInstanceByDom(chartRef.current);
-    const base64 = chart?.getDataURL({ type: 'png', pixelRatio: 2, backgroundColor: '#fff' });
+    const base64 = chart?.getDataURL({ type: "png", backgroundColor: "#fff" });
     if (base64) {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = base64;
-      link.download = `grafica_estado_${dataMode}.png`;
+      link.download = "feminicidios_estado_2025.png";
       link.click();
     }
   };
@@ -312,141 +266,139 @@ const BarChartEstado = () => {
   const handleDownloadPDF = async () => {
     if (!chartRef.current) return;
     const canvas = await html2canvas(chartRef.current);
-    const imgData = canvas.toDataURL('image/png');
+    const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF();
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
-    pdf.save(`grafica_estado_${dataMode}.pdf`);
+    pdf.addImage(imgData, "PNG", 0, 10, pdfWidth, pdfHeight);
+    pdf.save("feminicidios_estado_2025.pdf");
   };
 
+  // 💅 Estilos
+  const wrapperStyle: React.CSSProperties = {
+    padding: "1rem",
+    background: "#fff",
+    borderRadius: 8,
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+  };
+
+  const toolbarStyle: React.CSSProperties = {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "flex-end",
+    gap: "8px",
+    marginBottom: "10px",
+  };
+
+  const buttonStyle: React.CSSProperties = {
+    border: "1px solid #ddd",
+    background: "none",
+    borderRadius: 6,
+    padding: "6px 8px",
+    cursor: "pointer",
+  };
+
+  const legendBoxStyle: React.CSSProperties = {
+    backgroundColor: "#f9f9f9",
+    padding: "6px 10px",
+    borderRadius: 6,
+    marginBottom: 8,
+    color: "#555",
+  };
+
+  const totalBoxStyle: React.CSSProperties = {
+    backgroundColor: "#eee",
+    color: "#333",
+    padding: "6px 12px",
+    borderRadius: "8px",
+    fontSize: "14px",
+    fontWeight: "bold",
+    marginBottom: "10px",
+    textAlign: "center",
+  };
+
+  // Render
   return (
     <div style={wrapperStyle}>
-      <div style={toolbarStyle}>
-        <button onClick={handleDownloadImage} title="Descargar imagen" style={buttonStyle}><FaDownload /></button>
-        <button onClick={handleDownloadPDF} title="Descargar PDF" style={buttonStyle}><FaFilePdf /></button>
-        <button onClick={() => ordenarPorNombre()} title="Ordenar por Estado" style={buttonStyle}><FaSortAlphaDown /></button>
-        <button onClick={() => ordenarPorValor()} title="Ordenar por Valor/Tasa" style={buttonStyle}><FaSortAmountDown /></button>
+      <div style={totalBoxStyle}>
+        Total nacional de carpetas de investigación por feminicidio:{" "}
+        {total.toLocaleString()}
+      </div>
 
-        {/* Botón para activar/desactivar gradiente */}
+      <div style={toolbarStyle}>
+        <button onClick={handleDownloadImage} style={buttonStyle} title="Descargar imagen">
+          <FaDownload />
+        </button>
+        <button onClick={handleDownloadPDF} style={buttonStyle} title="Descargar PDF">
+          <FaFilePdf />
+        </button>
+        <button onClick={() => ordenarPorNombre()} style={buttonStyle} title="Ordenar A–Z">
+          <FaSortAlphaDown />
+        </button>
+        <button onClick={() => ordenarPorValor()} style={buttonStyle} title="Ordenar por valor">
+          <FaSortAmountDown />
+        </button>
         <button
-          onClick={() => setUseGradientColor((prev) => !prev)}
-          title={useGradientColor ? "Desactivar gradiente" : "Activar gradiente de color"}
+          onClick={() => setUseGradientColor((p) => !p)}
           style={buttonStyle}
+          title="Activar/Desactivar gradiente"
         >
           {useGradientColor ? "Gradiente ✔" : "Gradiente ✘"}
         </button>
-
-        <button onClick={mostrarTop10} title="Top 10 entidades" style={buttonStyle}>Top 10</button>
-        <button onClick={mostrarTop50Porciento} title="Entidades con +50%" style={buttonStyle}>+50%</button>
-        <button onClick={() => setChartType((prev) => (prev === 'bar' ? 'treemap' : 'bar'))} title="Cambiar tipo de gráfico" style={buttonStyle}>
-          {chartType === 'bar' ? <FaSitemap /> : <FaChartBar />}
+        <button onClick={mostrarTop10} style={buttonStyle}>
+          Top 10
         </button>
-        <button onClick={() => setShowAsPercentage((prev) => !prev)} title="Mostrar como porcentaje (solo para valor absoluto)" style={buttonStyle}>
-          {showAsPercentage ? '%' : '#'}
+        <button onClick={mostrarTop50} style={buttonStyle}>
+          +50%
         </button>
-        <button onClick={() => {
-          setShowAverageLine((prev) => !prev);
-          setLeyenda50(null);
-          setLeyendaTop10(null);
-        }} title="Mostrar/Ocultar Promedio Nacional (solo para valor absoluto sin porcentaje)" style={buttonStyle}>
-          {showAverageLine ? '🔴 Prom. Nal.' : '⚪ Prom. Nal.'}
-        </button>
-
-        {/* Botón para alternar valor vs tasa */}
         <button
-          onClick={() => {
-            setDataMode((prev) => (prev === 'valor' ? 'tasa' : 'valor'));
-            // Cuando cambias de modo, restableces algunas vistas
-            setLeyenda50(null);
-            setLeyendaTop10(null);
-            setShowAverageLine(false);
-          }}
-          title="Alternar entre valor absoluto y tasa"
+          onClick={() => setChartType((p) => (p === "bar" ? "treemap" : "bar"))}
           style={buttonStyle}
         >
-          {dataMode === 'valor' ? 'Tasa x C/100mil Hab.' : 'Numeros Absolutos'}
+          {chartType === "bar" ? <FaSitemap /> : <FaChartBar />}
         </button>
-
-        <button onClick={restablecerVistaOriginal} title="Restablecer vista original" style={buttonStyle}>⟳</button>
-        <div style={totalBoxStyle}>
-          {dataMode === 'valor'
-            ? `Total homicidios: ${total.toLocaleString()}`
-            : `Total tasa (sum): ${total.toFixed(2)}`}  
-        </div>
+        <button
+          onClick={() => setShowAsPercentage((p) => !p)}
+          style={buttonStyle}
+          title="Mostrar como porcentaje"
+        >
+          {showAsPercentage ? "%" : "#"}
+        </button>
+        <button
+          onClick={() => setShowAverageLine((p) => !p)}
+          style={buttonStyle}
+          title="Mostrar/Ocultar Promedio Nacional"
+        >
+          {showAverageLine ? "🔴 Prom. Nal." : "⚪ Prom. Nal."}
+        </button>
+        <button onClick={resetVista} style={buttonStyle}>
+          ⟳
+        </button>
       </div>
 
-      {showAverageLine && dataMode === 'valor' && (
+      {showAverageLine && (
         <div style={legendBoxStyle}>
-          🔺 {countAbove} entidades por encima · 🔻 {countBelow} entidades por debajo del promedio nacional
+          🔺 {countAbove} estados por encima · 🔻 {countBelow} por debajo del promedio nacional
         </div>
       )}
 
       {leyenda50 && !showAverageLine && (
         <div style={legendBoxStyle}>
-          {leyenda50.entidades} entidades concentran el {leyenda50.porcentaje}% de { dataMode === 'valor' ? 'los homicidios' : 'la tasa' }
+          {leyenda50.estados} estados concentran el{" "}
+          {leyenda50.porcentaje.toFixed(1)}% de las carpetas
         </div>
       )}
 
       {leyendaTop10 && !showAverageLine && (
         <div style={legendBoxStyle}>
-          Top 10 entidades acumulan {leyendaTop10.total.toLocaleString()} { dataMode === 'valor' ? 'homicidios' : 'tasa' } ({leyendaTop10.porcentaje}%)
+          Top 10 estados acumulan {leyendaTop10.total.toLocaleString()} carpetas (
+          {leyendaTop10.porcentaje.toFixed(1)}%)
         </div>
       )}
 
-      <div ref={chartRef} style={{ width: '100%', height: '500px', minHeight: '300px' }} />
+      <div ref={chartRef} style={{ width: "100%", height: "550px" }} />
     </div>
   );
 };
 
-// Estilos
-const wrapperStyle: React.CSSProperties = {
-  position: 'relative',
-  padding: '1rem',
-  border: '1px solid #ccc',
-  borderRadius: '8px',
-  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-  background: '#fff',
-  marginBottom: '2rem',
-  width: '100%',
-  boxSizing: 'border-box',
-};
-
-const toolbarStyle: React.CSSProperties = {
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'flex-end',
-  gap: '10px',
-  marginBottom: '10px',
-  alignItems: 'center',
-};
-
-const buttonStyle: React.CSSProperties = {
-  background: 'none',
-  border: '1px solid #ddd',
-  borderRadius: 6,
-  cursor: 'pointer',
-  fontSize: '14px',
-  padding: '6px 8px',
-};
-
-const totalBoxStyle: React.CSSProperties = {
-  backgroundColor: '#eee',
-  color: '#333',
-  padding: '4px 10px',
-  borderRadius: '6px',
-  fontSize: '13px',
-  fontWeight: 'bold',
-  whiteSpace: 'nowrap',
-};
-
-const legendBoxStyle: React.CSSProperties = {
-  backgroundColor: '#f9f9f9',
-  color: '#555',
-  padding: '8px 12px',
-  borderRadius: '6px',
-  fontSize: '14px',
-  marginBottom: '10px',
-};
-
-export default BarChartEstado;
+export default BarChartFeminicidiosEstado;

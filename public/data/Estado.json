@@ -6,8 +6,8 @@
   },
   {
     "entidad": "Baja California",
-    "valor": 1140,
-    "tasa": 30.25
+    "valor": 1141,
+    "tasa": 30.27
   },
   {
     "entidad": "Baja California Sur",
@@ -16,13 +16,13 @@
   },
   {
     "entidad": "Campeche",
-    "valor": 72,
-    "tasa": 7.76
+    "valor": 73,
+    "tasa": 7.86
   },
   {
     "entidad": "Chiapas",
-    "valor": 306,
-    "tasa": 5.52
+    "valor": 307,
+    "tasa": 5.54
   },
   {
     "entidad": "Chihuahua",
@@ -31,18 +31,18 @@
   },
   {
     "entidad": "Ciudad de México",
-    "valor": 608,
-    "tasa": 6.6
+    "valor": 609,
+    "tasa": 6.61
   },
   {
     "entidad": "Coahuila de Zaragoza",
-    "valor": 61,
-    "tasa": 1.94
+    "valor": 62,
+    "tasa": 1.97
   },
   {
     "entidad": "Colima",
-    "valor": 379,
-    "tasa": 51.82
+    "valor": 380,
+    "tasa": 51.96
   },
   {
     "entidad": "Durango",
@@ -51,13 +51,13 @@
   },
   {
     "entidad": "Guanajuato",
-    "valor": 1897,
-    "tasa": 30.76
+    "valor": 1901,
+    "tasa": 30.83
   },
   {
     "entidad": "Guerrero",
-    "valor": 805,
-    "tasa": 22.74
+    "valor": 808,
+    "tasa": 22.82
   },
   {
     "entidad": "Hidalgo",
@@ -66,8 +66,8 @@
   },
   {
     "entidad": "Jalisco",
-    "valor": 795,
-    "tasa": 9.52
+    "valor": 796,
+    "tasa": 9.54
   },
   {
     "entidad": "Michoacán de Ocampo",
@@ -76,13 +76,13 @@
   },
   {
     "entidad": "Morelos",
-    "valor": 786,
-    "tasa": 39.87
+    "valor": 787,
+    "tasa": 39.92
   },
   {
     "entidad": "México",
-    "valor": 1265,
-    "tasa": 7.44
+    "valor": 1269,
+    "tasa": 7.47
   },
   {
     "entidad": "Nayarit",
@@ -91,18 +91,18 @@
   },
   {
     "entidad": "Nuevo León",
-    "valor": 629,
-    "tasa": 10.87
+    "valor": 630,
+    "tasa": 10.89
   },
   {
     "entidad": "Oaxaca",
-    "valor": 514,
-    "tasa": 12.44
+    "valor": 516,
+    "tasa": 12.49
   },
   {
     "entidad": "Puebla",
-    "valor": 620,
-    "tasa": 9.42
+    "valor": 624,
+    "tasa": 9.48
   },
   {
     "entidad": "Querétaro",
@@ -116,28 +116,28 @@
   },
   {
     "entidad": "San Luis Potosí",
-    "valor": 163,
-    "tasa": 5.78
+    "valor": 164,
+    "tasa": 5.81
   },
   {
     "entidad": "Sinaloa",
-    "valor": 1307,
-    "tasa": 43.18
+    "valor": 1310,
+    "tasa": 43.28
   },
   {
     "entidad": "Sonora",
-    "valor": 822,
-    "tasa": 27.91
+    "valor": 830,
+    "tasa": 28.18
   },
   {
     "entidad": "Tabasco",
-    "valor": 604,
-    "tasa": 25.14
+    "valor": 606,
+    "tasa": 25.22
   },
   {
     "entidad": "Tamaulipas",
-    "valor": 178,
-    "tasa": 5.05
+    "valor": 179,
+    "tasa": 5.07
   },
   {
     "entidad": "Tlaxcala",
@@ -146,13 +146,13 @@
   },
   {
     "entidad": "Veracruz de Ignacio de la Llave",
-    "valor": 699,
-    "tasa": 8.67
+    "valor": 703,
+    "tasa": 8.72
   },
   {
     "entidad": "Yucatán",
-    "valor": 20,
-    "tasa": 0.86
+    "valor": 21,
+    "tasa": 0.9
   },
   {
     "entidad": "Zacatecas",
